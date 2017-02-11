@@ -3,6 +3,7 @@ using System.Collections;
 
 public class HelpButton : MonoBehaviour {
     public GameObject HelpObject;
+    public GameObject Main;
     // Use this for initialization
 
     void OnMouseEnter()
@@ -16,6 +17,8 @@ public class HelpButton : MonoBehaviour {
     }
     void OnMouseDown()
     {
+        GetComponent<SpriteRenderer>().color = Color.white;
+        Main.SetActive(false);
         HelpObject.SetActive(true);
     }
 }

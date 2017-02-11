@@ -53,7 +53,7 @@ public class Character2D : MonoBehaviour
         ChangeRotateSpeed(3);
         Disable = false;
         m_Rigidbody2D.velocity = new Vector3(0, 0, 0);
-        transform.position = new Vector3(Random.Range(-2000, 1300), 900, 0);
+        transform.position = new Vector3(Random.Range(m_Gamemode.RespawnLeft, m_Gamemode.RespawnRight), m_Gamemode.Respawnheight, 0);
     }
     private void Awake()
     {
@@ -184,7 +184,7 @@ public class Character2D : MonoBehaviour
     }
     IEnumerator CancelDisable()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(m_Gamemode.DamageTime);
         Disable = false;
     }
 }

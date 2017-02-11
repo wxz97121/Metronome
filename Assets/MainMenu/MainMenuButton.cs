@@ -6,6 +6,7 @@ public class MainMenuButton : MonoBehaviour {
     public Sprite Normal;
     public Sprite Over;
     public GameObject Maker;
+    public GameObject Main;
 	// Use this for initialization
 	void Start () {
 	
@@ -26,7 +27,11 @@ public class MainMenuButton : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        if (gameObject.name == "maker1") Maker.SetActive(true);
+        if (gameObject.name == "maker1")
+        {
+            Main.SetActive(false);
+            Maker.SetActive(true);
+        }
         else SceneManager.LoadScene("Demo");
     }
 }

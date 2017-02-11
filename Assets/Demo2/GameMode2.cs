@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameMode2 : GameMode
 {
-    public bool PreparingHammer;
+ /*   public bool PreparingHammer;
     public GameObject Hammer;
     public float Hammer_Time = 10;
     // Use this for initialization
@@ -112,5 +112,5 @@ public class GameMode2 : GameMode
             }
         }
         SceneManager.LoadScene("MainMenu");
-    }
+    }*/
 }
