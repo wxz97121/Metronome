@@ -27,11 +27,7 @@ public class MainMenuButton : MonoBehaviour {
     }
     void OnMouseDown()
     {
-        if (gameObject.name == "maker1")
-        {
-            Main.SetActive(false);
-            Maker.SetActive(true);
-        }
-        else SceneManager.LoadScene("Demo");
+        Main.SetActive(false);
+        Maker.SetActive(true);
     }
 }

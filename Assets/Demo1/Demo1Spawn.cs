@@ -35,7 +35,6 @@ public class Demo1Spawn : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log(PreparingWine);
         if (!Preparing)
             if (GameObject.FindGameObjectWithTag("Yincha") == null)
             {

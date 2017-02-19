@@ -23,6 +23,7 @@ public class Character2D : MonoBehaviour
     private Rigidbody2D m_Rigidbody2D;
     public bool Disable = false;
     public SpriteRenderer LegRenderer;
+    public SpriteRenderer CopterRenderer;
     private int nowSprite = 0;
     public int life = 3;
     public bool wined = false;
@@ -32,7 +33,8 @@ public class Character2D : MonoBehaviour
     public GameMode m_Gamemode;
     public Sprite[] WinedSprite;
     public Sprite[] normalMap;
-
+    public bool isFly;
+    public float flyForce;
     public IEnumerator Respawn()
     {
         GetComponent<AudioSource>().Play();
@@ -42,28 +44,30 @@ public class Character2D : MonoBehaviour
             GetComponentInChildren<Wave>().ChangeHammer();
         yield return new WaitForSeconds(3);
         transform.Rotate(0, 0, -90);
-
+        flyForce = m_Gamemode.flyForce;
         m_MaxSpeed = m_Gamemode.maxspeed;
         MoveForce = m_Gamemode.moveforce;
         m_JumpForce = m_Gamemode.jumpforce;
         GoAwayDist = m_Gamemode.goaway;
         GetComponent<Rigidbody2D>().gravityScale = m_Gamemode.gscale;
-
         wined = false;
-        ChangeRotateSpeed(3);
+        ChangeRotateSpeed(m_Gamemode.wavespeed);
         Disable = false;
+        isFly = false;
+        CopterRenderer.gameObject.SetActive(false);
         m_Rigidbody2D.velocity = new Vector3(0, 0, 0);
         transform.position = new Vector3(Random.Range(m_Gamemode.RespawnLeft, m_Gamemode.RespawnRight), m_Gamemode.Respawnheight, 0);
     }
     private void Awake()
     {
+        flyForce = m_Gamemode.flyForce;
         m_MaxSpeed = m_Gamemode.maxspeed;
         MoveForce = m_Gamemode.moveforce;
         m_JumpForce = m_Gamemode.jumpforce;
         GoAwayDist = m_Gamemode.goaway;
         GetComponent<Rigidbody2D>().gravityScale = m_Gamemode.gscale;
         GetComponent<Rigidbody2D>().drag = m_Gamemode.lineardrag;
-
+        ChangeRotateSpeed(m_Gamemode.wavespeed);
         Disable = false;
         m_GroundCheck = transform.Find("GroundCheck");
         m_CeilingCheck = transform.Find("CeilingCheck");
@@ -146,14 +150,18 @@ public class Character2D : MonoBehaviour
             }
         }
 
-        //if (m_Grounded && jump && m_Anim.GetBool("Ground"))
-        if (m_Grounded && jump)
+        if (isFly && jump)
+        {
+            m_Rigidbody2D.AddForce(new Vector2(0f, flyForce));
+        }
+        else if (m_Grounded && jump)
         {
             // Add a vertical force to the player.
             m_Grounded = false;
             //m_Anim.SetBool("Ground", false);
             m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
         }
+        
     }
 
 

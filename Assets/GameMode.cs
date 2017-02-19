@@ -18,7 +18,7 @@ public class GameMode : MonoBehaviour
     public int goaway = 50000;
     public float wavespeed = 3;
     public float lineardrag = 0;
-
+    public float flyForce;
     public float RespawnLeft = -2000;
     public float RespawnRight = 1300;
     public float Respawnheight = 900;

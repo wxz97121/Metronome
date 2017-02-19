@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class myInput : MonoBehaviour {
     public KeyCode moveLeft;
     public KeyCode moveRight;
     public KeyCode Jump;
+    public int Type;
     // Use this for initialization
     private Character2D m_Character;
     private bool m_Jump;
@@ -20,7 +22,8 @@ public class myInput : MonoBehaviour {
         if (!m_Jump)
         {
             // Read the jump input in Update so button presses aren't missed.
-            m_Jump = Input.GetKeyDown(Jump);
+            if (Type == 3) m_Jump = Input.GetKey(Jump);
+            else m_Jump = Input.GetKeyDown(Jump);
         }
     }
 
