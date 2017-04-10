@@ -11,6 +11,9 @@ public class Wave : MonoBehaviour
     public bool isHammer;
     public Sprite HammerSprite;
     public Sprite normalHammer;
+    public bool newWave = false;
+    private float nowTime;
+    //public float newWave_c;
     public void ChangeHammer()
     {
         if (!isHammer)
@@ -27,6 +30,7 @@ public class Wave : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        nowTime = 0;
         speed = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode>().wavespeed;
     }
     /*void HammerTrigged(Collider2D other)
@@ -77,13 +81,17 @@ public class Wave : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        nowTime += Time.fixedDeltaTime;
+        //print(nowTime);
         if (GetComponentInParent<Character2D>().Disable) return;
-        
-            if (transform.eulerAngles.z > 60 && direcion == 1 && transform.eulerAngles.z < 90)
+
+        if (transform.eulerAngles.z > 60 && direcion == 1 && transform.eulerAngles.z < 90)
         {
             GetComponent<AudioSource>().clip = Tap;
             GetComponent<AudioSource>().volume = 0.95f;
             GetComponent<AudioSource>().Play();
+            //if (newWave) print(nowTime);
+            nowTime = 0;
             direcion *= -1;
         }
         else if (transform.eulerAngles.z < 240 && direcion == -1 && transform.eulerAngles.z > 200)
@@ -91,11 +99,29 @@ public class Wave : MonoBehaviour
             GetComponent<AudioSource>().clip = Tap;
             GetComponent<AudioSource>().volume = 0.95f;
             GetComponent<AudioSource>().Play();
+            //if (newWave) print(nowTime);
+            nowTime = 0;
             direcion *= -1;
         }
         if (!GetComponentInParent<Character2D>().wined)
-            transform.Rotate(new Vector3(0, 0, direcion * speed));
+        {
+            if (newWave)
+            {
+                float Rate = 0.9f / speed * 4;
+                float b = Mathf.PI * (6) / Rate / Rate;
+                float a = -b / Rate;
+                //print(Rate);
+                //print((nowTime * nowTime * a + nowTime * b));
+                while (nowTime > Rate) nowTime -= Rate;
+                //print(a);
+                //print(newWave_c);
+                //print(nowTime);
+                //print(0.02f + nowTime * nowTime * a + newWave_c);
+                transform.Rotate(new Vector3(0, 0, Time.fixedDeltaTime * direcion * (nowTime * nowTime * a + nowTime * b) * 180 / Mathf.PI));
+            }
+            else transform.Rotate(new Vector3(0, 0, direcion * speed));
+        }
         else
-            transform.Rotate(new Vector3(0, 0, direcion * (0.5f+5*Mathf.Abs(Mathf.Cos(transform.eulerAngles.z/360*2*Mathf.PI)))));
+            transform.Rotate(new Vector3(0, 0, direcion * (0.5f + 5 * Mathf.Abs(Mathf.Cos(transform.eulerAngles.z / 360 * 2 * Mathf.PI)))));
     }
 }

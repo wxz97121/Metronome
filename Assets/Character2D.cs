@@ -54,7 +54,7 @@ public class Character2D : MonoBehaviour
         ChangeRotateSpeed(m_Gamemode.wavespeed);
         Disable = false;
         isFly = false;
-        CopterRenderer.gameObject.SetActive(false);
+        if (CopterRenderer != null) CopterRenderer.gameObject.SetActive(false);
         m_Rigidbody2D.velocity = new Vector3(0, 0, 0);
         transform.position = new Vector3(Random.Range(m_Gamemode.RespawnLeft, m_Gamemode.RespawnRight), m_Gamemode.Respawnheight, 0);
     }
@@ -81,7 +81,7 @@ public class Character2D : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             if (m_Gamemode.pause) yield break;
-            if (Disable && HP!=15)
+            if (Disable && HP != 15)
             {
                 GetComponent<SpriteRenderer>().sprite = getDemage;
                 LegRenderer.sprite = null;
@@ -134,11 +134,11 @@ public class Character2D : MonoBehaviour
         if (Disable) return;
         if (wined) move *= -1;
         //m_Anim.SetBool("Crouch", crouch);
-        // if (m_Grounded)
+         if (m_Grounded || m_Gamemode.airControl)
         {
             //m_Anim.SetFloat("Speed", Mathf.Abs(move));
-            
-            if (Mathf.Abs(m_Rigidbody2D.velocity.x)>m_MaxSpeed && (m_Rigidbody2D.velocity.x*move>0)) m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
+
+            if (Mathf.Abs(m_Rigidbody2D.velocity.x) > m_MaxSpeed && (m_Rigidbody2D.velocity.x * move > 0)) m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
             else m_Rigidbody2D.AddForce(new Vector3(move, 0, 0) * MoveForce);
             if (move > 0 && !m_FacingRight)
             {
@@ -161,7 +161,7 @@ public class Character2D : MonoBehaviour
             //m_Anim.SetBool("Ground", false);
             m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
         }
-        
+
     }
 
 

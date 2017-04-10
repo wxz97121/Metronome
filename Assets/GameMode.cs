@@ -12,6 +12,7 @@ public class GameMode : MonoBehaviour
 
     public float DamageTime;
     public float gscale = 180;
+    public bool airControl = true;
     public float maxspeed = 1500;
     public float moveforce = 2000;
     public float jumpforce = 70000;
