@@ -6,6 +6,9 @@ public class myInput : MonoBehaviour {
     public KeyCode moveLeft;
     public KeyCode moveRight;
     public KeyCode Jump;
+    public KeyCode Stop;
+    public KeyCode Rush;
+    public KeyCode HardAttack;
     public int Type;
     // Use this for initialization
     private Character2D m_Character;
@@ -35,6 +38,9 @@ public class myInput : MonoBehaviour {
         if (Input.GetKey(moveRight)) direction = 1;
         // Pass all parameters to the character control script.
         m_Character.Move(direction, m_Jump);
+        if (Input.GetKey(Stop)) m_Character.StartCoroutine(m_Character.Stop());
+        if (Input.GetKey(Rush)) m_Character.StartCoroutine(m_Character.Rush());
+        if (Input.GetKey(HardAttack)) m_Character.StartCoroutine(m_Character.Hard_Attack());
         m_Jump = false;
     }
 }

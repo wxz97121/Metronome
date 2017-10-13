@@ -16,12 +16,12 @@ public class Demo1Spawn : MonoBehaviour
         yield return new WaitForSeconds(Wine_Time);
         if (Random.value > 0.5)
         {
-            GameObject newWine = (GameObject)GameObject.Instantiate(Wine, new Vector3(-2300, -718, 0), new Quaternion());
+            GameObject newWine = Instantiate(Wine, new Vector3(-2300, -718, 0), new Quaternion());
             newWine.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(minForce, maxForce), 0));
         }
         else
         {
-            GameObject newWine = (GameObject)GameObject.Instantiate(Wine, new Vector3(1600, -718, 0), new Quaternion());
+            GameObject newWine = Instantiate(Wine, new Vector3(1600, -718, 0), new Quaternion());
             newWine.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1 * Random.Range(minForce, maxForce), 0));
         }
         PreparingWine = false;

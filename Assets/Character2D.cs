@@ -35,8 +35,16 @@ public class Character2D : MonoBehaviour
     public Sprite[] normalMap;
     public bool isFly;
     public float flyForce;
+    public bool isStop = false;
+    public float StopSecond = 0.5f;
+    public float HardAttackMultiple = 3;
+    public bool newWave = false;
+    public bool newMove;
+    private bool Rushing = false;
+    public AnimationCurve RushCurve;
     public IEnumerator Respawn()
     {
+        Rushing = false;
         GetComponent<AudioSource>().Play();
         transform.Rotate(0, 0, 90);
         HP = 15;
@@ -54,6 +62,7 @@ public class Character2D : MonoBehaviour
         ChangeRotateSpeed(m_Gamemode.wavespeed);
         Disable = false;
         isFly = false;
+        isStop = false;
         if (CopterRenderer != null) CopterRenderer.gameObject.SetActive(false);
         m_Rigidbody2D.velocity = new Vector3(0, 0, 0);
         transform.position = new Vector3(Random.Range(m_Gamemode.RespawnLeft, m_Gamemode.RespawnRight), m_Gamemode.Respawnheight, 0);
@@ -101,6 +110,33 @@ public class Character2D : MonoBehaviour
             }
         }
     }
+    public IEnumerator Stop()
+    {
+        isStop = true;
+        yield return new WaitForSeconds(StopSecond);
+        isStop = false;
+    }
+    public IEnumerator Hard_Attack()
+    {
+        GetComponentInChildren<Wave>().multiple = HardAttackMultiple;
+        yield return new WaitForSeconds(0.15f);
+        GetComponentInChildren<Wave>().multiple = 1;
+    }
+    public IEnumerator Rush()
+    {
+        if (Rushing || Disable) yield break;
+        Rushing = true;
+        float BeginTime = Time.time;
+        while (Time.time - BeginTime < RushCurve[RushCurve.length - 1].time)
+        {
+            if (m_FacingRight)
+                m_Rigidbody2D.velocity = new Vector3(m_MaxSpeed * RushCurve.Evaluate(Time.time - BeginTime), 0, 0);
+            else
+                m_Rigidbody2D.velocity = new Vector3(-m_MaxSpeed * RushCurve.Evaluate(Time.time - BeginTime), 0, 0);
+            yield return new WaitForFixedUpdate();
+        }
+        Rushing = false;
+    }
 
     private void FixedUpdate()
     {
@@ -131,15 +167,19 @@ public class Character2D : MonoBehaviour
 
     public void Move(float move, bool jump)
     {
-        if (Disable) return;
+        if (Disable || Rushing) return;
         if (wined) move *= -1;
         //m_Anim.SetBool("Crouch", crouch);
-         if (m_Grounded || m_Gamemode.airControl)
+        if (m_Grounded || m_Gamemode.airControl)
         {
             //m_Anim.SetFloat("Speed", Mathf.Abs(move));
-
-            if (Mathf.Abs(m_Rigidbody2D.velocity.x) > m_MaxSpeed && (m_Rigidbody2D.velocity.x * move > 0)) m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
-            else m_Rigidbody2D.AddForce(new Vector3(move, 0, 0) * MoveForce);
+            if (!newMove)
+            {
+                if (Mathf.Abs(m_Rigidbody2D.velocity.x) > m_MaxSpeed && (m_Rigidbody2D.velocity.x * move > 0))
+                    m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
+                else m_Rigidbody2D.AddForce(new Vector3(move, 0, 0) * MoveForce);
+            }
+            else m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed / 1.5f, m_Rigidbody2D.velocity.y);
             if (move > 0 && !m_FacingRight)
             {
                 Flip();
@@ -180,6 +220,7 @@ public class Character2D : MonoBehaviour
     }
     public void Damage(int deltaHP, Transform OtherTrans)
     {
+        Rushing = false;
         if (Disable) return;
         HP += deltaHP;
         Disable = true;

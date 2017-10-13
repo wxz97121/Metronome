@@ -11,7 +11,7 @@ public class Wave : MonoBehaviour
     public bool isHammer;
     public Sprite HammerSprite;
     public Sprite normalHammer;
-    public bool newWave = false;
+    public float multiple = 1;
     private float nowTime;
     //public float newWave_c;
     public void ChangeHammer()
@@ -81,6 +81,7 @@ public class Wave : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (GetComponentInParent<Character2D>().isStop) return;
         nowTime += Time.fixedDeltaTime;
         //print(nowTime);
         if (GetComponentInParent<Character2D>().Disable) return;
@@ -105,7 +106,7 @@ public class Wave : MonoBehaviour
         }
         if (!GetComponentInParent<Character2D>().wined)
         {
-            if (newWave)
+            if (GetComponentInParent<Character2D>().newWave)
             {
                 float Rate = 0.9f / speed * 4;
                 float b = Mathf.PI * (6) / Rate / Rate;
@@ -117,9 +118,9 @@ public class Wave : MonoBehaviour
                 //print(newWave_c);
                 //print(nowTime);
                 //print(0.02f + nowTime * nowTime * a + newWave_c);
-                transform.Rotate(new Vector3(0, 0, Time.fixedDeltaTime * direcion * (nowTime * nowTime * a + nowTime * b) * 180 / Mathf.PI));
+                transform.Rotate(new Vector3(0, 0, multiple*Time.fixedDeltaTime * direcion * (nowTime * nowTime * a + nowTime * b) * 180 / Mathf.PI));
             }
-            else transform.Rotate(new Vector3(0, 0, direcion * speed));
+            else transform.Rotate(new Vector3(0, 0, direcion * speed* multiple));
         }
         else
             transform.Rotate(new Vector3(0, 0, direcion * (0.5f + 5 * Mathf.Abs(Mathf.Cos(transform.eulerAngles.z / 360 * 2 * Mathf.PI)))));
