@@ -9,20 +9,23 @@ public class GameMode : MonoBehaviour
     public Sprite[] Win2Sprite;
     public Sprite[] LoseSprite;
     public bool pause = false;
-
+	public int maxJumpTimes = 2;
     public float DamageTime;
     public float gscale = 180;
     public bool airControl = true;
     public float maxspeed = 1500;
     public float moveforce = 2000;
     public float jumpforce = 70000;
-    public int goaway = 50000;
+	public float jumpforce2 = 70000;
+	public int goaway = 50000;
     public float wavespeed = 3;
     public float lineardrag = 0;
     public float flyForce;
     public float RespawnLeft = -2000;
     public float RespawnRight = 1300;
     public float Respawnheight = 900;
+	public AnimationCurve RushCurve;
+	public float CD=1;
     // Use this for initialization
     void Start()
     {
