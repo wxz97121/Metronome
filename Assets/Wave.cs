@@ -4,6 +4,7 @@ using System.Collections;
 public class Wave : MonoBehaviour
 {
     private int direcion = 1;
+    [HideInInspector]
     public float speed = 1;
     public AudioClip Tap;
     public AudioClip Coll;
@@ -31,35 +32,14 @@ public class Wave : MonoBehaviour
     void Start()
     {
         nowTime = 0;
-        speed = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode>().wavespeed;
+        speed = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode_base>().wavespeed;
     }
-    /*void HammerTrigged(Collider2D other)
-    {
-        if (!isHammer) return;
-        if ((transform.eulerAngles.z < 60 || transform.eulerAngles.z > 330) && direcion == -1) return;
-        if ((transform.eulerAngles.z > 240 && transform.eulerAngles.z < 330) && direcion == 1) return;
-        if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
-        {
-            other.GetComponent<Character2D>().Damage(-5, transform);
-            GetComponentInParent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            GetComponent<AudioSource>().clip = Hit;
-            GetComponent<AudioSource>().volume = 1;
-            GetComponent<AudioSource>().Play();
-            direcion *= -1;
-        }
-        else if (other.tag == "Weapon")
-        {
-            GetComponent<AudioSource>().clip = Coll;
-            GetComponent<AudioSource>().volume = 0.45f;
-            GetComponent<AudioSource>().Play();
-            //direcion *= -1;
-        }
-    }*/
     public void OnTriggerEnter2D(Collider2D other)
     {
-        print(other.tag);
+        //如果正在向上摆锤，什么都不做
         if ((transform.eulerAngles.z < 60 || transform.eulerAngles.z > 330) && direcion == -1) return;
         if ((transform.eulerAngles.z > 240 && transform.eulerAngles.z < 330) && direcion == 1) return;
+        //如果砸到人
         if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
         {
             other.GetComponent<Character2D>().Damage(-5, transform);
@@ -69,6 +49,7 @@ public class Wave : MonoBehaviour
             GetComponent<AudioSource>().Play();
             direcion *= -1;
         }
+        //如果砸到武器
         else if (other.tag == "Weapon")
         {
             GetComponent<AudioSource>().clip = Coll;
@@ -76,29 +57,24 @@ public class Wave : MonoBehaviour
             GetComponent<AudioSource>().Play();
             if (!isHammer) direcion *= -1;
         }
+        //如果砸到怪物
         else if (other.tag=="Enemy")
         {
             
             other.GetComponent<Enemy>().HasBeenAttack();
             if (!isHammer) direcion *= -1;
         }
-        //if (GetComponentInParent<Rigidbody2D>().velocity.y==0) direcion *= -1;
-        //else kill Monster 
     }
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (GetComponentInParent<Character2D>().isStop) return;
         nowTime += Time.fixedDeltaTime;
-        //print(nowTime);
         if (GetComponentInParent<Character2D>().Disable) return;
-
         if (transform.eulerAngles.z > 60 && direcion == 1 && transform.eulerAngles.z < 90)
         {
             GetComponent<AudioSource>().clip = Tap;
             GetComponent<AudioSource>().volume = 0.95f;
             GetComponent<AudioSource>().Play();
-            //if (newWave) print(nowTime);
             nowTime = 0;
             direcion *= -1;
         }
@@ -107,7 +83,6 @@ public class Wave : MonoBehaviour
             GetComponent<AudioSource>().clip = Tap;
             GetComponent<AudioSource>().volume = 0.95f;
             GetComponent<AudioSource>().Play();
-            //if (newWave) print(nowTime);
             nowTime = 0;
             direcion *= -1;
         }
@@ -117,14 +92,8 @@ public class Wave : MonoBehaviour
             {
                 float Rate = 0.9f / speed * 4;
                 float b = Mathf.PI * (6) / Rate / Rate;
-                float a = -b / Rate;
-                //print(Rate);
-                //print((nowTime * nowTime * a + nowTime * b));
+                float a = -b / Rate;;
                 while (nowTime > Rate) nowTime -= Rate;
-                //print(a);
-                //print(newWave_c);
-                //print(nowTime);
-                //print(0.02f + nowTime * nowTime * a + newWave_c);
                 transform.Rotate(new Vector3(0, 0, multiple*Time.fixedDeltaTime * direcion * (nowTime * nowTime * a + nowTime * b) * 180 / Mathf.PI));
             }
             else transform.Rotate(new Vector3(0, 0, direcion * speed* multiple));

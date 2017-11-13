@@ -42,10 +42,10 @@ public class myInput : MonoBehaviour {
 		
         // Pass all parameters to the character control script.
         m_Character.Move(direction, m_Jump);
-        if (Input.GetKey(Stop)) m_Character.StartCoroutine(m_Character.Stop());
+        //if (Input.GetKey(Stop)) m_Character.StartCoroutine(m_Character.Stop());
         if (Input.GetKey(RushLeft)) m_Character.StartCoroutine(m_Character.Rush(-1));
 		if (Input.GetKey(RushRight)) m_Character.StartCoroutine(m_Character.Rush(1));
-		if (Input.GetKey(HardAttack)) m_Character.StartCoroutine(m_Character.Hard_Attack());
+		//if (Input.GetKey(HardAttack)) m_Character.StartCoroutine(m_Character.Hard_Attack());
         m_Jump = false;
     }
 }

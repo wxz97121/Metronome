@@ -1,37 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-public class GameMode : MonoBehaviour
+public class GameMode : GameMode_base
 {
     public Character2D Player1;
     public Character2D Player2;
     public Sprite[] Win1Sprite;
     public Sprite[] Win2Sprite;
     public Sprite[] LoseSprite;
-    public bool pause = false;
-	public int maxJumpTimes = 2;
-    public float DamageTime;
-    public float gscale = 180;
-    public bool airControl = true;
-    public float maxspeed = 1500;
-    public float moveforce = 2000;
-    public float jumpforce = 70000;
-	public float jumpforce2 = 70000;
-	public int goaway = 50000;
-    public float wavespeed = 3;
-    public float lineardrag = 0;
-    public float flyForce;
     public float RespawnLeft = -2000;
     public float RespawnRight = 1300;
     public float Respawnheight = 900;
-	public AnimationCurve RushCurve;
-	public float CD=1;
-    // Use this for initialization
-    void Start()
+    public override Vector3 RespawnLocation()
     {
-
+        float x = Random.Range(RespawnLeft, RespawnRight);
+        float y = Respawnheight;
+        return new Vector3(x, y, 0);
     }
-
     void Update()
     {
         if (Player1.HP == 0)
@@ -58,8 +43,6 @@ public class GameMode : MonoBehaviour
                 StartCoroutine(Player2.Respawn());
             }
         }
-
-
     }
 
     public IEnumerator EndGame(int Winner)
