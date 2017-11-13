@@ -57,6 +57,7 @@ public class Wave : MonoBehaviour
     }*/
     public void OnTriggerEnter2D(Collider2D other)
     {
+        print(other.tag);
         if ((transform.eulerAngles.z < 60 || transform.eulerAngles.z > 330) && direcion == -1) return;
         if ((transform.eulerAngles.z > 240 && transform.eulerAngles.z < 330) && direcion == 1) return;
         if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
@@ -73,6 +74,12 @@ public class Wave : MonoBehaviour
             GetComponent<AudioSource>().clip = Coll;
             GetComponent<AudioSource>().volume = 0.45f;
             GetComponent<AudioSource>().Play();
+            if (!isHammer) direcion *= -1;
+        }
+        else if (other.tag=="Enemy")
+        {
+            
+            other.GetComponent<Enemy>().HasBeenAttack();
             if (!isHammer) direcion *= -1;
         }
         //if (GetComponentInParent<Rigidbody2D>().velocity.y==0) direcion *= -1;
