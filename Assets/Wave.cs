@@ -52,15 +52,21 @@ public class Wave : MonoBehaviour
         //如果砸到武器
         else if (other.tag == "Weapon")
         {
+            //将来记得改
+            if (other.GetComponent<Wave>() != null)
+            {
+                if ((other.transform.eulerAngles.z < 60 || other.transform.eulerAngles.z > 330) && other.GetComponent<Wave>().direcion == -1) return;
+                if ((other.transform.eulerAngles.z > 240 && other.transform.eulerAngles.z < 330) && other.GetComponent<Wave>().direcion == 1) return;
+            }
             GetComponent<AudioSource>().clip = Coll;
             GetComponent<AudioSource>().volume = 0.45f;
             GetComponent<AudioSource>().Play();
             if (!isHammer) direcion *= -1;
         }
         //如果砸到怪物
-        else if (other.tag=="Enemy")
+        else if (other.tag == "Enemy")
         {
-            
+
             other.GetComponent<Enemy>().HasBeenAttack();
             if (!isHammer) direcion *= -1;
         }
@@ -92,11 +98,11 @@ public class Wave : MonoBehaviour
             {
                 float Rate = 0.9f / speed * 4;
                 float b = Mathf.PI * (6) / Rate / Rate;
-                float a = -b / Rate;;
+                float a = -b / Rate; ;
                 while (nowTime > Rate) nowTime -= Rate;
-                transform.Rotate(new Vector3(0, 0, multiple*Time.fixedDeltaTime * direcion * (nowTime * nowTime * a + nowTime * b) * 180 / Mathf.PI));
+                transform.Rotate(new Vector3(0, 0, multiple * Time.fixedDeltaTime * direcion * (nowTime * nowTime * a + nowTime * b) * 180 / Mathf.PI));
             }
-            else transform.Rotate(new Vector3(0, 0, direcion * speed* multiple));
+            else transform.Rotate(new Vector3(0, 0, direcion * speed * multiple));
         }
         else
             transform.Rotate(new Vector3(0, 0, direcion * (0.5f + 5 * Mathf.Abs(Mathf.Cos(transform.eulerAngles.z / 360 * 2 * Mathf.PI)))));

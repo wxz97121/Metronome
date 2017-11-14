@@ -11,6 +11,7 @@ public class Demo1Spawn : MonoBehaviour
     public float Wine_Time = 8;
     public float minForce = 40000;
     public float maxForce = 1000000;
+    public Transform[] ForkPos;
     IEnumerator RefreshWine()
     {
         yield return new WaitForSeconds(Wine_Time);
@@ -31,6 +32,9 @@ public class Demo1Spawn : MonoBehaviour
     {
         yield return new WaitForSeconds(yincha_Time);
         GameObject.Instantiate(yincha, new Vector3(Random.Range(-2000, 1300), 900, 0), new Quaternion());
+        //GameObject.Instantiate(yincha, new Vector3(-302, 900, 0), new Quaternion());
+        //int now = (int) Mathf.Floor(Random.Range(0,ForkPos.Length-0.001f));
+        //GameObject.Instantiate(yincha,ForkPos[now].position , new Quaternion());
         Preparing = false;
     }
     void Update()

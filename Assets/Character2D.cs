@@ -238,11 +238,13 @@ public class Character2D : MonoBehaviour
 	}
 	public void Damage(int deltaHP, Transform OtherTrans)//被打了>_<
 	{
-		//Rushing = false;
-		if (Disable || Rushing) return;
+        //Rushing = false;
+        ChangeRotateSpeed(m_Gamemode.wavespeed);
+        if (Disable || Rushing) return;
 		HP += deltaHP;
 		Disable = true;
-		if (transform.position.x > OtherTrans.position.x) m_Rigidbody2D.AddForce(new Vector2(GoAwayDist, 0));
+        m_Rigidbody2D.velocity = new Vector2(0,m_Rigidbody2D.velocity.y);
+        if (transform.position.x > OtherTrans.position.x) m_Rigidbody2D.AddForce(new Vector2(GoAwayDist, 0));
 		else m_Rigidbody2D.AddForce(new Vector2(-GoAwayDist, 0));
 		if (HP != 0) StartCoroutine(CancelDisable());
 	}
