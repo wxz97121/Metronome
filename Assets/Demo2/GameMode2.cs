@@ -1,54 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-
-public class GameMode2 : GameMode
+public class GameMode2 : GameMode_base
 {
- /*   public bool PreparingHammer;
-    public GameObject Hammer;
-    public float Hammer_Time = 10;
-    // Use this for initialization
-    void Start()
+    public Character2D Player1;
+    public Character2D Player2;
+    public Sprite[] Win1Sprite;
+    public Sprite[] Win2Sprite;
+    public Sprite[] LoseSprite;
+    public float RespawnLeft = -2000;
+    public float RespawnRight = 1300;
+    public float Respawnheight = 900;
+    public override Vector3 RespawnLocation()
     {
-        PreparingWine = false;
-        PreparingHammer = false;
+        float x = Random.Range(RespawnLeft, RespawnRight);
+        float y = Respawnheight;
+        return new Vector3(x, y, 0);
     }
-    IEnumerator RefreshWine()
-    {
-        yield return new WaitForSeconds(Wine_Time);
-        if (Random.value > 0.5)
-        {
-            GameObject newWine = (GameObject)GameObject.Instantiate(Wine, new Vector3(-2000, 90, 0), new Quaternion());
-            //newWine.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(minForce, maxForce), 0));
-        }
-        else
-        {
-            GameObject newWine = (GameObject)GameObject.Instantiate(Wine, new Vector3(1300, 90, 0), new Quaternion());
-            //newWine.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1 * Random.Range(minForce, maxForce), 0));
-        }
-        PreparingWine = false;
-    }
-    IEnumerator RefreshHammer()
-    {
-        yield return new WaitForSeconds(Hammer_Time);
-        Instantiate(Hammer, new Vector3(Random.Range(-800, 0), 900, 0), new Quaternion());
-        PreparingHammer = false;
-    }
-    // Update is called once per frame
     void Update()
     {
-        if (!PreparingWine)
-            if (GameObject.FindGameObjectWithTag("Wine") == null)
-            {
-                PreparingWine = true;
-                StartCoroutine(RefreshWine());
-            }
-        if (!PreparingHammer)
-            if (GameObject.FindGameObjectWithTag("Hammer") == null)
-            {
-                PreparingHammer = true;
-                StartCoroutine(RefreshHammer());
-            }
         if (Player1.HP == 0)
         {
             if (Player1.life == 1)
@@ -112,5 +82,5 @@ public class GameMode2 : GameMode
             }
         }
         SceneManager.LoadScene("MainMenu");
-    }*/
+    }
 }
