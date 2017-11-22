@@ -3,7 +3,9 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class GameMode : GameMode_base
 {
+    [HideInInspector]
     public Character2D Player1;
+    [HideInInspector]
     public Character2D Player2;
     public Sprite[] Win1Sprite;
     public Sprite[] Win2Sprite;
@@ -16,6 +18,11 @@ public class GameMode : GameMode_base
         float x = Random.Range(RespawnLeft, RespawnRight);
         float y = Respawnheight;
         return new Vector3(x, y, 0);
+    }
+    private void Awake()
+    {
+        Player1 = GameObject.Find("Player1").GetComponent<Character2D>();
+        Player2 = GameObject.Find("Player2").GetComponent<Character2D>();
     }
     void Update()
     {

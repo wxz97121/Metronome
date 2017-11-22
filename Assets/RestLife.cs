@@ -2,10 +2,24 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class RestLife : MonoBehaviour {
+public class RestLife : MonoBehaviour
+{
     public Sprite[] LifeSprite;
-    public Character2D Player;
-	void Update () {
-        GetComponent<Image>().sprite = LifeSprite[Player.life];
-	}
+    private Character2D m_Character;
+    public string Target;
+    private Image ImageUI;
+    private Scrollbar ScrollbarUI;
+    private void Awake()
+    {
+        m_Character = GameObject.Find(Target).GetComponent<Character2D>();
+        ImageUI = transform.Find("Image").GetComponent<Image>();
+        ScrollbarUI = transform.Find("Scrollbar").GetComponent<Scrollbar>();
+
+    }
+    void Update()
+    {
+        ImageUI.sprite = LifeSprite[m_Character.life];
+        ScrollbarUI.size = (float)m_Character.HP / 15;
+
+    }
 }
