@@ -15,16 +15,20 @@ public class Wave : MonoBehaviour
     public float multiple = 1;
     private float nowTime;
     //public float newWave_c;
+    private Vector2[] BigPoly = { new Vector2(-64, 250), new Vector2(-202, 158), new Vector2(-146, 86), new Vector2(-16, 167) };
+    private Vector2[] SmallPoly = { new Vector2(-129, 143), new Vector2(-108, 111), new Vector2(-60, 145), new Vector2(-77, 180) };
     public void ChangeHammer()
     {
         if (!isHammer)
         {
             GetComponent<SpriteRenderer>().sprite = HammerSprite;
+            GetComponent<PolygonCollider2D>().SetPath(0,BigPoly);
             isHammer = true;
         }
         else
         {
             GetComponent<SpriteRenderer>().sprite = normalHammer;
+            GetComponent<PolygonCollider2D>().SetPath(0, SmallPoly);
             isHammer = false;
         }
     }

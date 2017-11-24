@@ -20,6 +20,7 @@ public class Character2D : MonoBehaviour
     public bool newWave = false;
     public bool newMove;
     public float flyForce;
+    private bool isJumping = false;
     #endregion
     // The fastest the player can travel in the x axis.
 
@@ -27,7 +28,7 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
     private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
-    const float k_GroundedRadius = 5f; // Radius of the overlap circle to determine if grounded
+    const float k_GroundedRadius = 50f; // Radius of the overlap circle to determine if grounded
     private bool m_Grounded;            // Whether or not the player is grounded.
     private Transform m_CeilingCheck;   // A position marking where to check for ceilings
     const float k_CeilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
@@ -60,6 +61,7 @@ public class Character2D : MonoBehaviour
     //public float HardAttackMultiple = 3;
     void Init()//复活和初次出现时更新各种值
     {
+        isJumping = false;
         GetComponent<Rigidbody2D>().gravityScale = m_Gamemode.gscale;
         GetComponent<Rigidbody2D>().drag = m_Gamemode.lineardrag;
         ChangeRotateSpeed(m_Gamemode.wavespeed);
@@ -161,14 +163,16 @@ public class Character2D : MonoBehaviour
     {
         //if (Time.time - LastRushTime < m_Gamemode.CD) GetComponent<SpriteRenderer>().color = Color.gray;
         //else GetComponent<SpriteRenderer>().color = Color.white;
+        if (m_Rigidbody2D.velocity.y < 0) isJumping = false;
         m_Grounded = false;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-        if (!(m_Rigidbody2D.velocity.y > 5f && nowJumpTimes>0))
+        if (!isJumping)
         {
             for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i].gameObject != gameObject)
                 {
+                    print("Ground!");
                     m_Grounded = true;
                     nowJumpTimes = 0;
                 }
@@ -178,7 +182,6 @@ public class Character2D : MonoBehaviour
         //m_Anim.SetBool("Ground", m_Grounded);
         //m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
     }
-
 
     public void Move(float move, bool jump)//移动
     {
@@ -211,6 +214,7 @@ public class Character2D : MonoBehaviour
         }
         else if (nowJumpTimes < maxJumpTimes && jump)
         {
+            isJumping = true;
             m_Grounded = false;
             if (m_Rigidbody2D.velocity.y < 0) m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0);
             if (nowJumpTimes == 0) m_Rigidbody2D.velocity += new Vector2(0, m_JumpForce);
