@@ -26,7 +26,7 @@ public class GameMode : GameMode_base
     }
     void Update()
     {
-        if (Player1.HP == 0)
+        if (Player1.HP <= 0)
         {
             if (Player1.life == 1)
             {
@@ -38,7 +38,7 @@ public class GameMode : GameMode_base
                 StartCoroutine(Player1.Respawn());
             }
         }
-        if (Player2.HP == 0)
+        if (Player2.HP <= 0)
         {
             if (Player2.life == 1)
             {
