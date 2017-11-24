@@ -10,7 +10,7 @@ public class myInput : MonoBehaviour {
     public KeyCode RushLeft;
 	public KeyCode RushRight;
     public KeyCode HardAttack;
-    public int Type;
+    //public int Type;
     // Use this for initialization
     private Character2D m_Character;
 
@@ -28,7 +28,7 @@ public class myInput : MonoBehaviour {
         if (!m_Jump)
         {
             // Read the jump input in Update so button presses aren't missed.
-            if (Type == 3) m_Jump = Input.GetKey(Jump);
+            if (m_Character.isFly) m_Jump = Input.GetKey(Jump);
             else m_Jump = Input.GetKeyDown(Jump);
         }
     }

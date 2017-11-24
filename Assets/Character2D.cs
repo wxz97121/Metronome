@@ -25,35 +25,33 @@ public class Character2D : MonoBehaviour
 
     #region Ground_And_Ceil_Check
     [SerializeField]
-	private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
-	private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-	private bool m_Grounded;            // Whether or not the player is grounded.
-	private Transform m_CeilingCheck;   // A position marking where to check for ceilings
-	const float k_CeilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
+    private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
+    private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
+    const float k_GroundedRadius = 5f; // Radius of the overlap circle to determine if grounded
+    private bool m_Grounded;            // Whether or not the player is grounded.
+    private Transform m_CeilingCheck;   // A position marking where to check for ceilings
+    const float k_CeilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
     #endregion
 
     private bool isFlip = true;
-    public GameObject HPUI;
-	public int HP = 15;
-	//private Animator m_Anim;            // Reference to the player's animator component.
-	
-	private Rigidbody2D m_Rigidbody2D;
-	
-	public SpriteRenderer LegRenderer;
-	public SpriteRenderer CopterRenderer;
-	private int nowSprite = 0;
-	public int life = 3;
+    public int HP = 15;
+    //private Animator m_Anim;            // Reference to the player's animator component.
+
+    private Rigidbody2D m_Rigidbody2D;
+
+    public SpriteRenderer LegRenderer;
+    public SpriteRenderer CopterRenderer;
+    private int nowSprite = 0;
+    public int life = 3;
     [HideInInspector]
-	public bool wined = false;
-	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
-	public Sprite[] Walking;
-	public Sprite getDemage;
-	private GameMode_base m_Gamemode;
-	public Sprite[] WinedSprite;
-	public Sprite[] normalMap;
-    [HideInInspector]
-	public bool isFly;
+    public bool wined = false;
+    private bool m_FacingRight = true;  // For determining which way the player is currently facing.
+    public Sprite[] Walking;
+    public Sprite getDemage;
+    private GameMode_base m_Gamemode;
+    public Sprite[] WinedSprite;
+    public Sprite[] normalMap;
+    public bool isFly;
     private float LastRushTime = -100;
     private bool Rushing = false;
     [HideInInspector]
@@ -76,181 +74,182 @@ public class Character2D : MonoBehaviour
         RushCurve = m_Gamemode.RushCurve;
         wined = false;
         Disable = false;
-        isFly = false;
+        //isFly = false;
         isStop = false;
         ChangeRotateSpeed(m_Gamemode.wavespeed);
         if (CopterRenderer != null) CopterRenderer.gameObject.SetActive(false);
         m_Rigidbody2D.velocity = new Vector3(0, 0, 0);
     }
     public IEnumerator Respawn()
-	{
+    {
         Rushing = false;
-		GetComponent<AudioSource>().Play();
-		transform.Rotate(0, 0, 90);
-		HP = 15;
-		if (GetComponentInChildren<Wave>().isHammer)
-			GetComponentInChildren<Wave>().ChangeHammer();
-		yield return new WaitForSeconds(3);
+        GetComponent<AudioSource>().Play();
+        transform.Rotate(0, 0, 90);
+        HP = 15;
+        if (GetComponentInChildren<Wave>().isHammer)
+            GetComponentInChildren<Wave>().ChangeHammer();
+        yield return new WaitForSeconds(3);
         Init();
         transform.position = m_Gamemode.RespawnLocation();
         transform.Rotate(0, 0, -90);
     }
-	private void Awake()
-	{
+    private void Awake()
+    {
         //m_Anim = GetComponent<Animator>();
         m_Gamemode = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode_base>();
-		m_GroundCheck = transform.Find("GroundCheck");
-		m_CeilingCheck = transform.Find("CeilingCheck");
-		m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        m_GroundCheck = transform.Find("GroundCheck");
+        m_CeilingCheck = transform.Find("CeilingCheck");
+        m_Rigidbody2D = GetComponent<Rigidbody2D>();
         Init();
         StartCoroutine(WalkUpdate());
-	}
-    
-	IEnumerator WalkUpdate()//更新Sprite，从而实现动画
+    }
+
+    IEnumerator WalkUpdate()//更新Sprite，从而实现动画
     {
-		while (true)
-		{
-			yield return new WaitForSeconds(0.1f);
-			if (m_Gamemode.pause) yield break;
-			if (Disable && HP != 15)
-			{
-				GetComponent<SpriteRenderer>().sprite = getDemage;
-				LegRenderer.sprite = null;
-			}
-			else if (wined)
-			{
-				nowSprite = (nowSprite + 1) % WinedSprite.Length;
-				LegRenderer.sprite = null;
-				GetComponent<SpriteRenderer>().sprite = WinedSprite[nowSprite];
-			}
-			else
-			{
-				nowSprite = (nowSprite + 1) % Walking.Length;
-				LegRenderer.sprite = Walking[nowSprite];
-				GetComponent<SpriteRenderer>().sprite = normalMap[nowSprite];
-			}
-		}
-	}
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            if (m_Gamemode.pause) yield break;
+            if (Disable && HP != 15)
+            {
+                GetComponent<SpriteRenderer>().sprite = getDemage;
+                LegRenderer.sprite = null;
+            }
+            else if (wined)
+            {
+                nowSprite = (nowSprite + 1) % WinedSprite.Length;
+                LegRenderer.sprite = null;
+                GetComponent<SpriteRenderer>().sprite = WinedSprite[nowSprite];
+            }
+            else
+            {
+                nowSprite = (nowSprite + 1) % Walking.Length;
+                LegRenderer.sprite = Walking[nowSprite];
+                GetComponent<SpriteRenderer>().sprite = normalMap[nowSprite];
+            }
+        }
+    }
 
     //已经废弃的重击和停顿。
-	//public IEnumerator Stop()
-	//{
-	//	isStop = true;
-	//	yield return new WaitForSeconds(StopSecond);
-	//	isStop = false;
-	//}
-	//public IEnumerator Hard_Attack()
-	//{
-	//	GetComponentInChildren<Wave>().multiple = HardAttackMultiple;
-	//	yield return new WaitForSeconds(0.15f);
-	//	GetComponentInChildren<Wave>().multiple = 1;
-	//}
-	
-	public IEnumerator Rush(int dir)//冲锋
-	{
-		if (Rushing || Disable || Time.time-LastRushTime<m_Gamemode.CD) yield break;
-		Rushing = true;
-		LastRushTime = Time.time;
-		while (Time.time - LastRushTime < RushCurve[RushCurve.length - 1].time)
-		{
-			m_Rigidbody2D.velocity = new Vector3(dir * m_RushSpeed * RushCurve.Evaluate(Time.time - LastRushTime), 0, 0);
-			yield return new WaitForFixedUpdate();
-		}
-		Rushing = false;
-	}
+    //public IEnumerator Stop()
+    //{
+    //	isStop = true;
+    //	yield return new WaitForSeconds(StopSecond);
+    //	isStop = false;
+    //}
+    //public IEnumerator Hard_Attack()
+    //{
+    //	GetComponentInChildren<Wave>().multiple = HardAttackMultiple;
+    //	yield return new WaitForSeconds(0.15f);
+    //	GetComponentInChildren<Wave>().multiple = 1;
+    //}
 
-	private void FixedUpdate()//每帧更新落地状态，以及Rush_CD
-	{
-		if (Time.time - LastRushTime < m_Gamemode.CD) GetComponent<SpriteRenderer>().color = Color.gray;
-		else GetComponent<SpriteRenderer>().color = Color.white;
-		m_Grounded = false;
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-		if (m_Rigidbody2D.velocity.y < 5f)
-		{
-			for (int i = 0; i < colliders.Length; i++)
-			{
-				if (colliders[i].gameObject != gameObject)
-				{
-					m_Grounded = true;
-					nowJumpTimes = 0;
-				}
-			}
-		}
-		HPUI.GetComponentInChildren<Scrollbar>().size = (float)HP / 15;
-		//m_Anim.SetBool("Ground", m_Grounded);
-		//m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
-	}
+    public IEnumerator Rush(int dir)//冲锋
+    {
+        if (Rushing || Disable || Time.time - LastRushTime < m_Gamemode.CD) yield break;
+        Rushing = true;
+        LastRushTime = Time.time;
+        while (Time.time - LastRushTime < RushCurve[RushCurve.length - 1].time)
+        {
+            m_Rigidbody2D.velocity = new Vector3(dir * m_MaxSpeed * RushCurve.Evaluate(Time.time - LastRushTime), 0, 0);
+            yield return new WaitForFixedUpdate();
+        }
+        Rushing = false;
+    }
+
+    private void FixedUpdate()//每帧更新落地状态，以及Rush_CD
+    {
+        //if (Time.time - LastRushTime < m_Gamemode.CD) GetComponent<SpriteRenderer>().color = Color.gray;
+        //else GetComponent<SpriteRenderer>().color = Color.white;
+        m_Grounded = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+        if (!(m_Rigidbody2D.velocity.y > 5f && nowJumpTimes>0))
+        {
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].gameObject != gameObject)
+                {
+                    m_Grounded = true;
+                    nowJumpTimes = 0;
+                }
+            }
+        }
+        //HPUI.GetComponentInChildren<Scrollbar>().size = (float)HP / 15;
+        //m_Anim.SetBool("Ground", m_Grounded);
+        //m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
+    }
 
 
-	public void Move(float move, bool jump)//移动
-	{
-		if (Disable || Rushing) return;
-		if (wined) move *= -1;
-		//m_Anim.SetBool("Crouch", crouch);
-		if (m_Grounded || m_Gamemode.airControl)
-		{
-			//m_Anim.SetFloat("Speed", Mathf.Abs(move));
-			if (!newMove)
-			{
-				if (Mathf.Abs(m_Rigidbody2D.velocity.x) > m_MaxSpeed && (m_Rigidbody2D.velocity.x * move > 0))
-					m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
-				else m_Rigidbody2D.AddForce(new Vector3(move, 0, 0) * MoveForce);
-			}
-			else m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed / 1.5f, m_Rigidbody2D.velocity.y);
-			if (move > 0 && !m_FacingRight)
-			{
-				Flip();
-			}
-			else if (move < 0 && m_FacingRight)
-			{
-				Flip();
-			}
-		}
-		if (isFly && jump)
-		{
-			m_Rigidbody2D.AddForce(new Vector2(0f, flyForce));
-		}
-		else if (nowJumpTimes < maxJumpTimes && jump)
-		{
-			// Add a vertical force to the player.
-			m_Grounded = false;
-			if (nowJumpTimes == 0) m_Rigidbody2D.velocity = new Vector3(m_Rigidbody2D.velocity.x, m_JumpForce, 0);
-			else m_Rigidbody2D.velocity = new Vector3(m_Rigidbody2D.velocity.x, m_JumpForce2, 0);
-			//m_Anim.SetBool("Ground", false);
-			//m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
-			nowJumpTimes++;
-		}
+    public void Move(float move, bool jump)//移动
+    {
+        if (jump) print(nowJumpTimes);
+        if (Disable || Rushing) return;
+        if (wined) move *= -1;
+        //m_Anim.SetBool("Crouch", crouch);
+        if (m_Grounded || m_Gamemode.airControl)
+        {
+            //m_Anim.SetFloat("Speed", Mathf.Abs(move));
+            if (!newMove)
+            {
+                if (Mathf.Abs(m_Rigidbody2D.velocity.x) > m_MaxSpeed && (m_Rigidbody2D.velocity.x * move > 0))
+                    m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed, m_Rigidbody2D.velocity.y);
+                else m_Rigidbody2D.AddForce(new Vector3(move, 0, 0) * MoveForce);
+            }
+            else m_Rigidbody2D.velocity = new Vector2(move * m_MaxSpeed / 1.5f, m_Rigidbody2D.velocity.y);
+            if (move > 0 && !m_FacingRight)
+            {
+                Flip();
+            }
+            else if (move < 0 && m_FacingRight)
+            {
+                Flip();
+            }
+        }
+        if (isFly && jump)
+        {
+            m_Rigidbody2D.AddForce(new Vector2(0f, flyForce));
+        }
+        else if (nowJumpTimes < maxJumpTimes && jump)
+        {
+            m_Grounded = false;
+            if (m_Rigidbody2D.velocity.y < 0) m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0);
+            if (nowJumpTimes == 0) m_Rigidbody2D.velocity += new Vector2(0, m_JumpForce);
+            else m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_JumpForce2);
+            //m_Anim.SetBool("Ground", false);
+            //m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+            nowJumpTimes++;
+        }
 
-	}
-	private void Flip()//根据面向，实现翻转
-	{
-		m_FacingRight = !m_FacingRight;
-		if (isFlip) LegRenderer.flipX = !LegRenderer.flipX;
-	}
+    }
+    private void Flip()//根据面向，实现翻转
+    {
+        m_FacingRight = !m_FacingRight;
+        if (isFlip) LegRenderer.flipX = !LegRenderer.flipX;
+    }
 
-	public void ChangeRotateSpeed(float Speed)
-	{
-		GetComponentInChildren<Wave>().speed = Speed;
-	}
-	public void incRotateSpeed(int deltaSpeed)
-	{
-		GetComponentInChildren<Wave>().speed += deltaSpeed;
-	}
-	public void Damage(int deltaHP, Transform OtherTrans)//被打了>_<
-	{
+    public void ChangeRotateSpeed(float Speed)
+    {
+        GetComponentInChildren<Wave>().speed = Speed;
+    }
+    public void incRotateSpeed(int deltaSpeed)
+    {
+        GetComponentInChildren<Wave>().speed += deltaSpeed;
+    }
+    public void Damage(int deltaHP, Transform OtherTrans)//被打了>_<
+    {
         //Rushing = false;
         ChangeRotateSpeed(m_Gamemode.wavespeed);
         if (Disable || Rushing) return;
-		HP += deltaHP;
-		Disable = true;
-        m_Rigidbody2D.velocity = new Vector2(0,m_Rigidbody2D.velocity.y);
+        HP += deltaHP;
+        Disable = true;
+        m_Rigidbody2D.velocity = new Vector2(0, m_Rigidbody2D.velocity.y);
         if (transform.position.x > OtherTrans.position.x) m_Rigidbody2D.AddForce(new Vector2(GoAwayDist, 0));
-		else m_Rigidbody2D.AddForce(new Vector2(-GoAwayDist, 0));
-		if (HP != 0) StartCoroutine(CancelDisable());
-	}
-	IEnumerator CancelDisable()
-	{
-		yield return new WaitForSeconds(m_Gamemode.DamageTime);
-		Disable = false;
-	}
+        else m_Rigidbody2D.AddForce(new Vector2(-GoAwayDist, 0));
+        if (HP != 0) StartCoroutine(CancelDisable());
+    }
+    IEnumerator CancelDisable()
+    {
+        yield return new WaitForSeconds(m_Gamemode.DamageTime);
+        Disable = false;
+    }
 }
