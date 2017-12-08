@@ -28,7 +28,8 @@ public class Hammer : MonoBehaviour {
         if (other.gameObject.tag == "Player")
         {
             used = true;
-            other.gameObject.GetComponentInChildren<Wave>().ChangeHammer();
+            other.GetComponentInChildren<Wave>().ChangeHammer();
+            other.GetComponent<Character2D>().AttackDamage = 15;
             Destroy(GetComponent<SpriteRenderer>());
             StartCoroutine(reset(other.GetComponent<Character2D>()));
         }
@@ -39,6 +40,8 @@ public class Hammer : MonoBehaviour {
         yield return new WaitForSeconds(Duration);
         if (m_Player.GetComponentInChildren<Wave>().isHammer)
             m_Player.GetComponentInChildren<Wave>().ChangeHammer();
+        if (m_Player.GetComponent<Character2D>().AttackDamage == 15)
+            m_Player.GetComponent<Character2D>().AttackDamage = 5;
         Destroy(gameObject);
     }
 }

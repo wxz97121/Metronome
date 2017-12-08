@@ -17,14 +17,16 @@ public class Ice : MonoBehaviour
 
         GetComponent<SpriteRenderer>().DOFade(0, 0.5f);
         yield return new WaitForSeconds(0.35f);
-        GetComponent<Collider2D>().isTrigger = true;
+        foreach (var Coli in GetComponentsInChildren<Collider2D>())
+            Coli.isTrigger = true;
         yield return new WaitForSeconds(0.15f);
 
         yield return new WaitForSeconds(Random.Range(minDisappearTime, maxDisappearTime));
 
         GetComponent<SpriteRenderer>().DOFade(1, 0.15f);
         yield return new WaitForSeconds(0.15f);
-        GetComponent<Collider2D>().isTrigger = false;
+        foreach (var Coli in GetComponentsInChildren<Collider2D>())
+            Coli.isTrigger = false;
         isDisappearing = false;
     }
     IEnumerator Show()
@@ -35,7 +37,8 @@ public class Ice : MonoBehaviour
 
         GetComponent<SpriteRenderer>().DOFade(1, 0.35f);
         yield return new WaitForSeconds(0.35f);
-        GetComponent<Collider2D>().enabled = true;
+        foreach (var Coli in GetComponentsInChildren<Collider2D>())
+            Coli.enabled = true;
         isDisappearing = false;
     }
 
@@ -43,19 +46,21 @@ public class Ice : MonoBehaviour
     {
         if (isDisappearing) return;
         //print(LayerMask.NameToLayer("Player"));
-        if (GetComponent<BoxCollider2D>().IsTouching(Player1.GetComponent<Collider2D>()) || GetComponent<BoxCollider2D>().IsTouching(Player2.GetComponent<Collider2D>()))
-        {
-            print("YES");
-            nowTime += Time.fixedDeltaTime;
-            var tmpColor = GetComponent<SpriteRenderer>().color;
-            tmpColor.a = (Mathf.Lerp(1, 0.1f, nowTime / minExistTime));
-            GetComponent<SpriteRenderer>().color = tmpColor;
-        }
+        float MeltingSpeed = 0;
+        if (GetComponent<BoxCollider2D>().IsTouching(Player1.GetComponent<Collider2D>()))
+            MeltingSpeed += Player1.GetComponent<Character2D>().meltSpeed;
+        if (GetComponent<BoxCollider2D>().IsTouching(Player2.GetComponent<Collider2D>()))
+            MeltingSpeed += Player1.GetComponent<Character2D>().meltSpeed; 
+        nowTime += Time.fixedDeltaTime*MeltingSpeed;
+        var tmpColor = GetComponent<SpriteRenderer>().color;
+        tmpColor.a = (Mathf.Lerp(1, 0.1f, nowTime / minExistTime));
+        GetComponent<SpriteRenderer>().color = tmpColor;
         if (nowTime > minExistTime)
         {
-            var tmpColor = GetComponent<SpriteRenderer>().color;
+            tmpColor = GetComponent<SpriteRenderer>().color;
             tmpColor.a = 0;
-            GetComponent<Collider2D>().enabled = false;
+            foreach (var Coli in GetComponentsInChildren<Collider2D>())
+                Coli.enabled = false;
             GetComponent<SpriteRenderer>().color = tmpColor;
             nowTime = 0;
             StartCoroutine(Show());

@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-public class GameMode : GameMode_base
+    
+public class GameMode_Fall : GameMode_base
 {
     public float DebugSpeed;
     [HideInInspector]
@@ -11,14 +13,10 @@ public class GameMode : GameMode_base
     public Sprite[] Win1Sprite;
     public Sprite[] Win2Sprite;
     public Sprite[] LoseSprite;
-    public float RespawnLeft = -2000;
-    public float RespawnRight = 1300;
-    public float Respawnheight = 900;
+    public float Respawnheight = 100;
     public override Vector3 RespawnLocation()
     {
-        float x = Random.Range(RespawnLeft, RespawnRight);
-        float y = Respawnheight;
-        return new Vector3(x, y, 0);
+        return GetComponent<PlatformRefresher>().LastPlat.transform.position + new Vector3(0, Respawnheight, 0);
     }
     private void Awake()
     {
@@ -56,9 +54,9 @@ public class GameMode : GameMode_base
     private void Update()
     {
         if (pause) return;
-        
+
         int nowAlivePlayer = 0;
-        GameObject Winner=null;
+        GameObject Winner = null;
         var AllPlayer = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject g in AllPlayer)
         {
@@ -70,7 +68,7 @@ public class GameMode : GameMode_base
     public IEnumerator EndGame(GameObject WinnerObject)
     {
         if (WinnerObject == null) yield break;
-        pause = true;   
+        pause = true;
         Player1.Disable = true;
         Player2.Disable = true;
         int nowSprite1 = 0;

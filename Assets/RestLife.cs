@@ -18,7 +18,7 @@ public class RestLife : MonoBehaviour
     }
     void Update()
     {
-        if (m_Character.life<LifeSprite.Length)
+        if (m_Character.life<LifeSprite.Length && m_Character.life>=0)
             ImageUI.sprite = LifeSprite[m_Character.life];
         ScrollbarUI.size = (float)m_Character.HP / 15;
 

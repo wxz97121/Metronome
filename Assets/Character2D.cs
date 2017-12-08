@@ -8,9 +8,12 @@ public class Character2D : MonoBehaviour
     public float m_MaxSpeed;
     [HideInInspector]
     public float MoveForce;
-    private float m_RushSpeed;
-    private float m_JumpForce;
-    private float m_JumpForce2;
+    [HideInInspector]
+    public float m_RushSpeed;
+    [HideInInspector]
+    public float m_JumpForce;
+    [HideInInspector]
+    public float m_JumpForce2;
     private int GoAwayDist = 5;
     [HideInInspector]
     public bool Disable = false;
@@ -45,6 +48,8 @@ public class Character2D : MonoBehaviour
     private int nowSprite = 0;
     public int life = 3;
     [HideInInspector]
+    public int AttackDamage = 5;
+    [HideInInspector]
     public bool wined = false;
     private bool m_FacingRight = true;  // For determining which way the player is currently facing.
     public Sprite[] Walking;
@@ -56,11 +61,16 @@ public class Character2D : MonoBehaviour
     private float LastRushTime = -100;
     private bool Rushing = false;
     [HideInInspector]
+    public float meltSpeed = 1;
+    [HideInInspector]
     public bool isStop = false;
     //public float StopSecond = 0.5f;
     //public float HardAttackMultiple = 3;
     void Init()//复活和初次出现时更新各种值
     {
+        AttackDamage = m_Gamemode.AttackDamage;
+        meltSpeed = m_Gamemode.meltSpeed;
+        //transform.localScale = Vector3.one;
         isJumping = false;
         GetComponent<Rigidbody2D>().gravityScale = m_Gamemode.gscale;
         GetComponent<Rigidbody2D>().drag = m_Gamemode.lineardrag;
@@ -76,6 +86,7 @@ public class Character2D : MonoBehaviour
         RushCurve = m_Gamemode.RushCurve;
         wined = false;
         Disable = false;
+        HP = 15;
         //isFly = false;
         isStop = false;
         ChangeRotateSpeed(m_Gamemode.wavespeed);
@@ -84,13 +95,15 @@ public class Character2D : MonoBehaviour
     }
     public IEnumerator Respawn()
     {
+        //print("???");
+        //if (Disable) yield break;
         Rushing = false;
         GetComponent<AudioSource>().Play();
         transform.Rotate(0, 0, 90);
-        HP = 15;
         if (GetComponentInChildren<Wave>().isHammer)
             GetComponentInChildren<Wave>().ChangeHammer();
         yield return new WaitForSeconds(3);
+        //life--;
         Init();
         transform.position = m_Gamemode.RespawnLocation();
         transform.Rotate(0, 0, -90);
@@ -170,12 +183,10 @@ public class Character2D : MonoBehaviour
         {
             for (int i = 0; i < colliders.Length; i++)
             {
-                if (colliders[i].gameObject != gameObject)
-                {
-                    print("Ground!");
-                    m_Grounded = true;
-                    nowJumpTimes = 0;
-                }
+                if (colliders[i].gameObject == gameObject) continue;
+                if (colliders[i].tag == "Weapon") continue;
+                m_Grounded = true;
+                nowJumpTimes = 0;
             }
         }
         //HPUI.GetComponentInChildren<Scrollbar>().size = (float)HP / 15;
@@ -185,7 +196,6 @@ public class Character2D : MonoBehaviour
 
     public void Move(float move, bool jump)//移动
     {
-        if (jump) print(nowJumpTimes);
         if (Disable || Rushing) return;
         if (wined) move *= -1;
         //m_Anim.SetBool("Crouch", crouch);
@@ -239,17 +249,20 @@ public class Character2D : MonoBehaviour
     {
         GetComponentInChildren<Wave>().speed += deltaSpeed;
     }
-    public void Damage(int deltaHP, Transform OtherTrans)//被打了>_<
+    public void Damage(int deltaHP, Transform OtherTrans, bool IgnoreDisable = false)//被打了>_<
     {
+        if (m_Gamemode.pause) return;
         //Rushing = false;
-        ChangeRotateSpeed(m_Gamemode.wavespeed);
-        if (Disable || Rushing) return;
+        //ChangeRotateSpeed(m_Gamemode.wavespeed);
+        if (HP <= 0) return;
+        if (IgnoreDisable == false && Disable) return;
         HP += deltaHP;
         Disable = true;
         m_Rigidbody2D.velocity = new Vector2(0, m_Rigidbody2D.velocity.y);
         if (transform.position.x > OtherTrans.position.x) m_Rigidbody2D.AddForce(new Vector2(GoAwayDist, 0));
         else m_Rigidbody2D.AddForce(new Vector2(-GoAwayDist, 0));
         if (HP > 0) StartCoroutine(CancelDisable());
+        else { life--; StartCoroutine(Respawn()); }
     }
     IEnumerator CancelDisable()
     {

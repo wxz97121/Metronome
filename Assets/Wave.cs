@@ -46,7 +46,7 @@ public class Wave : MonoBehaviour
         //如果砸到人
         if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
         {
-            other.GetComponent<Character2D>().Damage(-5, transform);
+            other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().AttackDamage, transform);
             GetComponentInParent<Rigidbody2D>().velocity = new Vector2(0, 0);
             GetComponent<AudioSource>().clip = Hit;
             GetComponent<AudioSource>().volume = 1;
