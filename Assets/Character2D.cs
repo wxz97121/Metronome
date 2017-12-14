@@ -103,6 +103,7 @@ public class Character2D : MonoBehaviour
         if (GetComponentInChildren<Wave>().isHammer)
             GetComponentInChildren<Wave>().ChangeHammer();
         yield return new WaitForSeconds(3);
+        if (m_Gamemode.pause) yield break;
         //life--;
         Init();
         transform.position = m_Gamemode.RespawnLocation();
@@ -185,6 +186,7 @@ public class Character2D : MonoBehaviour
             {
                 if (colliders[i].gameObject == gameObject) continue;
                 if (colliders[i].tag == "Weapon") continue;
+                if (colliders[i].isTrigger) continue;
                 m_Grounded = true;
                 nowJumpTimes = 0;
             }
