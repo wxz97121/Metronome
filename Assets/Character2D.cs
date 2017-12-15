@@ -258,6 +258,7 @@ public class Character2D : MonoBehaviour
         //ChangeRotateSpeed(m_Gamemode.wavespeed);
         if (HP <= 0) return;
         if (IgnoreDisable == false && Disable) return;
+        ChangeRotateSpeed(m_Gamemode.wavespeed);
         HP += deltaHP;
         Disable = true;
         m_Rigidbody2D.velocity = new Vector2(0, m_Rigidbody2D.velocity.y);
