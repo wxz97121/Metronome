@@ -13,7 +13,7 @@ public class myInput : MonoBehaviour
     //public KeyCode RushLeft;
     //public KeyCode RushRight;
     //public KeyCode HardAttack;
-    
+
     //public int Type;
     // Use this for initialization
     private Character2D m_Character;
@@ -41,10 +41,10 @@ public class myInput : MonoBehaviour
     private void FixedUpdate()
     {
         direction = 0;
-        direction=Input.GetAxis(JoyStickMove);
+        if (JoyStickMove.Length != 0) direction = Input.GetAxis(JoyStickMove);
         if (Input.GetKey(moveLeft)) direction = -1;
         if (Input.GetKey(moveRight)) direction = 1;
-        
+
         // Pass all parameters to the character control script.
         m_Character.Move(direction, m_Jump);
         //if (Input.GetKey(Stop)) m_Character.StartCoroutine(m_Character.Stop());

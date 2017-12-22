@@ -14,9 +14,12 @@ public class Character2D : MonoBehaviour
     public float m_JumpForce;
     [HideInInspector]
     public float m_JumpForce2;
-    private int GoAwayDist = 5;
+    [HideInInspector]
+    public int GoAwayDist = 5;
     [HideInInspector]
     public bool Disable = false;
+    [HideInInspector]
+    public float DamageTime = 0;
     private int nowJumpTimes = 0;
     private int maxJumpTimes;
     private AnimationCurve RushCurve;
@@ -88,6 +91,7 @@ public class Character2D : MonoBehaviour
         RushCurve = m_Gamemode.RushCurve;
         wined = false;
         Disable = false;
+        DamageTime = m_Gamemode.DamageTime;
         HP = 15;
         //isFly = false;
         isStop = false;
@@ -106,7 +110,7 @@ public class Character2D : MonoBehaviour
         if (GetComponentInChildren<Wave>().isHammer)
             GetComponentInChildren<Wave>().ChangeHammer();
         yield return new WaitForSeconds(3);
-        if (m_Gamemode.pause) yield break;
+        if (m_Gamemode.pause || life <= 0) yield break;
         //life--;
         Init();
         transform.position = m_Gamemode.RespawnLocation();
@@ -129,7 +133,7 @@ public class Character2D : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             if (m_Gamemode.pause) yield break;
-            if (Disable && HP != 15)
+            if (Disable && !isDead)
             {
                 GetComponent<SpriteRenderer>().sprite = getDemage;
                 LegRenderer.sprite = null;
@@ -261,7 +265,7 @@ public class Character2D : MonoBehaviour
         //ChangeRotateSpeed(m_Gamemode.wavespeed);
         if (HP <= 0) return;
         if (IgnoreDisable == false && Disable) return;
-        ChangeRotateSpeed(m_Gamemode.wavespeed);
+        if (deltaHP != 0) ChangeRotateSpeed(m_Gamemode.wavespeed);
         HP += deltaHP;
         Disable = true;
         m_Rigidbody2D.velocity = new Vector2(0, m_Rigidbody2D.velocity.y);
@@ -272,7 +276,7 @@ public class Character2D : MonoBehaviour
     }
     IEnumerator CancelDisable()
     {
-        yield return new WaitForSeconds(m_Gamemode.DamageTime);
+        yield return new WaitForSeconds(DamageTime);
         Disable = false;
     }
 }
