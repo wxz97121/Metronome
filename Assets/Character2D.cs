@@ -64,10 +64,12 @@ public class Character2D : MonoBehaviour
     public float meltSpeed = 1;
     [HideInInspector]
     public bool isStop = false;
+    private bool isDead = false;
     //public float StopSecond = 0.5f;
     //public float HardAttackMultiple = 3;
     void Init()//复活和初次出现时更新各种值
     {
+        isDead = false;
         AttackDamage = m_Gamemode.AttackDamage;
         meltSpeed = m_Gamemode.meltSpeed;
         //transform.localScale = Vector3.one;
@@ -97,6 +99,7 @@ public class Character2D : MonoBehaviour
     {
         //print("???");
         //if (Disable) yield break;
+        isDead = true;
         Rushing = false;
         GetComponent<AudioSource>().Play();
         transform.Rotate(0, 0, 90);
@@ -198,7 +201,7 @@ public class Character2D : MonoBehaviour
 
     public void Move(float move, bool jump)//移动
     {
-        if (Disable || Rushing) return;
+        if (Disable || Rushing || isDead) return;
         if (wined) move *= -1;
         //m_Anim.SetBool("Crouch", crouch);
         if (m_Grounded || m_Gamemode.airControl)
