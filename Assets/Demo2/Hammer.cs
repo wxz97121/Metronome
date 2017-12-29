@@ -29,8 +29,8 @@ public class Hammer : MonoBehaviour {
         {
             used = true;
             other.GetComponentInChildren<Wave>().ChangeHammer();
-            //other.GetComponent<Character2D>().AttackDamage = 15;
-            other.GetComponent<Character2D>().DamageTime = 1.2f;
+            other.GetComponent<Character2D>().AttackDamage = 20;
+            //other.GetComponent<Character2D>().DamageTime = 1.2f;
             //other.GetComponent<Character2D>().GoAwayDist = 90000;
             Destroy(GetComponent<SpriteRenderer>());
             StartCoroutine(reset(other.GetComponent<Character2D>()));

@@ -17,11 +17,12 @@ public class DeathColl : MonoBehaviour {
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player" && other.GetComponent<Character2D>().HP!=0)
+        if (other.gameObject.tag == "Player" && other.GetComponent<Character2D>().HP != 0)
         {
             other.GetComponent<Character2D>().Damage(-Damage, transform, IgnoreDisbale);
             other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             other.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, Force));
         }
+        else if (other.tag == "Box") Destroy(other.gameObject);
     }
 }

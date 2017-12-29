@@ -53,6 +53,8 @@ public class Character2D : MonoBehaviour
     [HideInInspector]
     public int AttackDamage = 5;
     [HideInInspector]
+    public int UpAttackDamage = 10;
+    [HideInInspector]
     public bool wined = false;
     private bool m_FacingRight = true;  // For determining which way the player is currently facing.
     public Sprite[] Walking;
@@ -67,13 +69,16 @@ public class Character2D : MonoBehaviour
     public float meltSpeed = 1;
     [HideInInspector]
     public bool isStop = false;
-    private bool isDead = false;
+    [HideInInspector]
+    public bool isDead = false;
     //public float StopSecond = 0.5f;
     //public float HardAttackMultiple = 3;
     void Init()//复活和初次出现时更新各种值
     {
+        HP = m_Gamemode.HPofLife;
         isDead = false;
         AttackDamage = m_Gamemode.AttackDamage;
+        UpAttackDamage = m_Gamemode.UpAttackDamage;
         meltSpeed = m_Gamemode.meltSpeed;
         //transform.localScale = Vector3.one;
         isJumping = false;
@@ -92,7 +97,6 @@ public class Character2D : MonoBehaviour
         wined = false;
         Disable = false;
         DamageTime = m_Gamemode.DamageTime;
-        HP = 15;
         //isFly = false;
         isStop = false;
         ChangeRotateSpeed(m_Gamemode.wavespeed);

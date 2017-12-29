@@ -17,12 +17,13 @@ public class Wave : MonoBehaviour
     //public float newWave_c;
     private Vector2[] BigPoly = { new Vector2(-64, 250), new Vector2(-202, 158), new Vector2(-146, 86), new Vector2(-16, 167) };
     private Vector2[] SmallPoly = { new Vector2(-129, 143), new Vector2(-108, 111), new Vector2(-60, 145), new Vector2(-77, 180) };
+    public GameObject Boom;
     public void ChangeHammer()
     {
         if (!isHammer)
         {
             GetComponent<SpriteRenderer>().sprite = HammerSprite;
-            GetComponent<PolygonCollider2D>().SetPath(0,BigPoly);
+            GetComponent<PolygonCollider2D>().SetPath(0, BigPoly);
             isHammer = true;
         }
         else
@@ -46,7 +47,14 @@ public class Wave : MonoBehaviour
         //如果砸到人
         if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
         {
-            other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().AttackDamage, transform);
+            //如果是跳劈
+            if (GetComponentInParent<Rigidbody2D>().velocity.y < 0 && transform.parent.position.y > other.transform.position.y + 50)
+            {
+                other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().UpAttackDamage, transform);
+                print("Ahhhh!");
+                Instantiate(Boom, other.transform.position, Quaternion.identity, other.transform);
+            }
+            else other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().AttackDamage, transform);
             GetComponentInParent<Rigidbody2D>().velocity = new Vector2(0, 0);
             GetComponent<AudioSource>().clip = Hit;
             GetComponent<AudioSource>().volume = 1;
@@ -73,6 +81,17 @@ public class Wave : MonoBehaviour
 
             other.GetComponent<Enemy>().HasBeenAttack();
             if (!isHammer) direcion *= -1;
+        }
+        else if (other.tag == "Box")
+        {
+            float GoAwayDist = 90000;
+            if (transform.position.x > other.transform.position.x) other.GetComponent<Rigidbody2D>().AddForce(new Vector2(-GoAwayDist, 0));
+            else other.GetComponent<Rigidbody2D>().AddForce(new Vector2(GoAwayDist, 0));
+            GetComponentInParent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            GetComponent<AudioSource>().clip = Hit;
+            GetComponent<AudioSource>().volume = 1;
+            GetComponent<AudioSource>().Play();
+            direcion *= -1;
         }
     }
     void FixedUpdate()

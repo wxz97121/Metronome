@@ -23,5 +23,7 @@ public abstract class GameMode_base : MonoBehaviour
     public abstract Vector3 RespawnLocation();
     public float meltSpeed = 1;
     public int AttackDamage = 5;
+    public int UpAttackDamage = 10;
+    public int HPofLife = 20;
     //public abstract IEnumerator EndGame(string Winner);
 }

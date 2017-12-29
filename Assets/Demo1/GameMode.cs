@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class GameMode : GameMode_base
 {
-    public float DebugSpeed;
     [HideInInspector]
     public Character2D Player1;
     [HideInInspector]
