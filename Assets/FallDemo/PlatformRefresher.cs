@@ -14,6 +14,7 @@ public class PlatformRefresher : MonoBehaviour
     [HideInInspector]
     public GameObject LastPlat;
     public float DistLimit;
+    public float RespawnHeight=550;
     // Use this for initialization
     void Start()
     {
@@ -41,9 +42,9 @@ public class PlatformRefresher : MonoBehaviour
             //Refreshindex = (Refreshindex + 1) % PlatformPrefab.Length;
         }
     }
-    // Update is called once per frame
-    void Update()
+    [SerializeField]
+    public void FallRefresh()
     {
-
+        GetComponent<GameMode_base>().RespawnLocation=LastPlat.transform.position + new Vector3(0, RespawnHeight, 0);
     }
 }

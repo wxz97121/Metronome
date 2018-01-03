@@ -47,12 +47,17 @@ public class Wave : MonoBehaviour
         //如果砸到人
         if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
         {
+            int FaceDir = GetComponentInParent<Character2D>().m_FacingRight ? -1 : 1;
             //如果是跳劈
-            if (GetComponentInParent<Rigidbody2D>().velocity.y < 0 && transform.parent.position.y > other.transform.position.y + 50)
+            if (GetComponentInParent<Rigidbody2D>().velocity.y < 0 
+                && transform.parent.position.y > other.transform.position.y + 50
+                && direcion*FaceDir>0)
             {
-                other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().UpAttackDamage, transform);
-                print("Ahhhh!");
                 Instantiate(Boom, other.transform.position, Quaternion.identity, other.transform);
+                other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().UpAttackDamage, transform);
+                Debug.Break();
+                //print("Ahhhh!");
+
             }
             else other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().AttackDamage, transform);
             GetComponentInParent<Rigidbody2D>().velocity = new Vector2(0, 0);
@@ -94,6 +99,7 @@ public class Wave : MonoBehaviour
             direcion *= -1;
         }
     }
+    // direction=1 摆锤向左，Direction=-1 摆锤向右
     void FixedUpdate()
     {
         if (GetComponentInParent<Character2D>().isStop) return;

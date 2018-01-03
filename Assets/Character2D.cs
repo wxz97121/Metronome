@@ -56,12 +56,14 @@ public class Character2D : MonoBehaviour
     public int UpAttackDamage = 10;
     [HideInInspector]
     public bool wined = false;
-    private bool m_FacingRight = true;  // For determining which way the player is currently facing.
+    [HideInInspector]
+    public bool m_FacingRight = true;  // For determining which way the player is currently facing.
     public Sprite[] Walking;
     public Sprite getDemage;
     private GameMode_base m_Gamemode;
     public Sprite[] WinedSprite;
     public Sprite[] normalMap;
+    public Sprite[] WinSprite;
     public bool isFly;
     private float LastRushTime = -100;
     private bool Rushing = false;
@@ -71,6 +73,7 @@ public class Character2D : MonoBehaviour
     public bool isStop = false;
     [HideInInspector]
     public bool isDead = false;
+    private bool isWin = false;
     //public float StopSecond = 0.5f;
     //public float HardAttackMultiple = 3;
     void Init()//复活和初次出现时更新各种值
@@ -117,7 +120,7 @@ public class Character2D : MonoBehaviour
         if (m_Gamemode.pause || life <= 0) yield break;
         //life--;
         Init();
-        transform.position = m_Gamemode.RespawnLocation();
+        transform.position = m_Gamemode.GetRespawnLocation();
         transform.Rotate(0, 0, -90);
     }
     private void Awake()
@@ -136,8 +139,13 @@ public class Character2D : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
-            if (m_Gamemode.pause) yield break;
-            if (Disable && !isDead)
+            if (isWin)
+            {
+                nowSprite = (nowSprite + 1) % WinSprite.Length;
+                LegRenderer.sprite = null;
+                GetComponent<SpriteRenderer>().sprite = WinSprite[nowSprite];
+            }
+            else if (Disable && !isDead)
             {
                 GetComponent<SpriteRenderer>().sprite = getDemage;
                 LegRenderer.sprite = null;
@@ -154,9 +162,14 @@ public class Character2D : MonoBehaviour
                 LegRenderer.sprite = Walking[nowSprite];
                 GetComponent<SpriteRenderer>().sprite = normalMap[nowSprite];
             }
+
         }
     }
-
+    public void Win()//让GameController告诉角色，他赢了，开始跳舞吧～
+    {
+        GetComponentInChildren<Wave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        isWin = true;
+    }
     //已经废弃的重击和停顿。
     //public IEnumerator Stop()
     //{
@@ -209,7 +222,7 @@ public class Character2D : MonoBehaviour
 
     public void Move(float move, bool jump)//移动
     {
-        if (Disable || Rushing || isDead) return;
+        if (Disable || Rushing || isDead || m_Gamemode.pause) return;
         if (wined) move *= -1;
         //m_Anim.SetBool("Crouch", crouch);
         if (m_Grounded || m_Gamemode.airControl)

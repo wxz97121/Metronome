@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public abstract class GameMode_base : MonoBehaviour
+using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+public class GameMode_base : MonoBehaviour
 {
-
     public bool pause = false;
     public int maxJumpTimes = 2;
     public float DamageTime = 0.75f;
@@ -20,10 +20,45 @@ public abstract class GameMode_base : MonoBehaviour
     public float flyForce = 0;
     public AnimationCurve RushCurve;
     public float CD = 1;
-    public abstract Vector3 RespawnLocation();
     public float meltSpeed = 1;
     public int AttackDamage = 5;
     public int UpAttackDamage = 10;
     public int HPofLife = 20;
+    [HideInInspector]
+    public Vector3 RespawnLocation;
     //public abstract IEnumerator EndGame(string Winner);
+    public UnityEvent RefreshLocation;
+    private GameObject[] AllPlayer;
+    public Vector3 GetRespawnLocation()
+    {
+        RefreshLocation.Invoke();
+        return RespawnLocation;
+    }
+    private void Awake()
+    {
+        AllPlayer = GameObject.FindGameObjectsWithTag("Player");
+    }
+    protected void Update()
+    {
+        if (pause) return;
+
+        int nowAlivePlayer = 0;
+        GameObject Winner = null;
+        foreach (GameObject g in AllPlayer)
+        {
+            if (g.GetComponent<Character2D>().life > 0)
+            { nowAlivePlayer++; Winner = g; }
+        }
+        if (nowAlivePlayer == 1) StartCoroutine(EndGame(Winner));
+    }
+    public IEnumerator EndGame(GameObject WinnerObject)
+    {
+        if (WinnerObject == null) yield break;
+        pause = true;
+        if (WinnerObject.GetComponent<Character2D>() != null)
+            WinnerObject.GetComponent<Character2D>().Win();
+        int Winner = WinnerObject.name[WinnerObject.name.Length - 1] - '0';
+        yield return new WaitForSeconds(6);
+        SceneManager.LoadScene("MainMenu");
+    }
 }

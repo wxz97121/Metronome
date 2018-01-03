@@ -41,7 +41,7 @@ public class Tuningfork : MonoBehaviour
     public IEnumerator reset(Character2D m_Player)
     {
         yield return new WaitForSeconds(Duration);
-        m_Player.ChangeRotateSpeed(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode>().wavespeed);
+        m_Player.ChangeRotateSpeed(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode_base>().wavespeed);
         Destroy(gameObject);
     }
 

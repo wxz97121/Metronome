@@ -56,7 +56,7 @@ public class Copter : MonoBehaviour {
         yield return new WaitForSeconds(Duration);
         m_Player.isFly = false;
         m_Player.CopterRenderer.gameObject.SetActive(false);
-        m_Player.ChangeRotateSpeed(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode>().wavespeed);
+        //m_Player.ChangeRotateSpeed(GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode>().wavespeed);
         Destroy(gameObject);
     }
 }
