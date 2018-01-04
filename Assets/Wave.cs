@@ -49,13 +49,14 @@ public class Wave : MonoBehaviour
         {
             int FaceDir = GetComponentInParent<Character2D>().m_FacingRight ? -1 : 1;
             //如果是跳劈
-            if (GetComponentInParent<Rigidbody2D>().velocity.y < 0 
+            if (GetComponentInParent<Rigidbody2D>().velocity.y < 0
                 && transform.parent.position.y > other.transform.position.y + 50
-                && direcion*FaceDir>0)
+                && direcion * FaceDir > 0
+                && GetComponentInParent<Character2D>().m_Grounded == false)
             {
                 Instantiate(Boom, other.transform.position, Quaternion.identity, other.transform);
                 other.GetComponent<Character2D>().Damage(-GetComponentInParent<Character2D>().UpAttackDamage, transform);
-                Debug.Break();
+                //Debug.Break();
                 //print("Ahhhh!");
 
             }
