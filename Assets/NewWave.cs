@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewWave : MonoBehaviour {
+public class NewWave : MonoBehaviour
+{
     private int direcion = 1;
     [HideInInspector]
     public float speed = 1;
@@ -48,8 +49,8 @@ public class NewWave : MonoBehaviour {
     public void OnTriggerEnter2D(Collider2D other)
     {
         //如果正在向上摆锤，什么都不做
-        if ((RotateTransform.eulerAngles.z < 90) && direcion == -1) return;
-        if ((RotateTransform.eulerAngles.z > 270) && direcion == 1) return;
+        if (RotateTransform.eulerAngles.z < 90 && direcion == -1) return;
+        if (RotateTransform.eulerAngles.z > 270 && direcion == 1) return;
         //如果砸到人
         if (other.tag == "Player" && GetComponentInParent<Character2D>().Disable == false)
         {
@@ -76,16 +77,21 @@ public class NewWave : MonoBehaviour {
         //如果砸到武器
         else if (other.tag == "Weapon")
         {
-            //将来记得改
-            if (other.GetComponent<Wave>() != null)
+            //注意到当一个摆锤成功弹开另一个的时候 因为你已经修改了自身的Dir，所以事件只会处理一次
+            if (other.GetComponent<NewWave>() != null)
             {
-                if ((other.transform.parent.eulerAngles.z < 90 || other.transform.parent.eulerAngles.z > 270) && other.GetComponent<NewWave>().direcion == -1) return;
-                if ((other.transform.parent.eulerAngles.z > 90 && other.transform.parent.eulerAngles.z < 270) && other.GetComponent<NewWave>().direcion == 1) return;
+                //Debug.Break();
+                print(1);
+                if (other.GetComponent<NewWave>().RotateTransform.eulerAngles.z < 90 && other.GetComponent<NewWave>().direcion == -1) return;
+                if (other.GetComponent<NewWave>().RotateTransform.eulerAngles.z > 270 && other.GetComponent<NewWave>().direcion == 1) return;
+                if (!other.GetComponent<NewWave>().isHammer) other.GetComponent<NewWave>().direcion *= -1;
+                print(2);
             }
             GetComponent<AudioSource>().clip = Coll;
             GetComponent<AudioSource>().volume = 0.45f;
             GetComponent<AudioSource>().Play();
             if (!isHammer) direcion *= -1;
+            
         }
         //如果砸到怪物
         else if (other.tag == "Enemy")
@@ -109,6 +115,8 @@ public class NewWave : MonoBehaviour {
     // direction=1 摆锤向左，Direction=-1 摆锤向右
     void FixedUpdate()
     {
+        //print(RotateTransform.eulerAngles.z);
+        //print(transform.parent.eulerAngles.z);
         if (GetComponentInParent<Character2D>().isStop) return;
         nowTime += Time.fixedDeltaTime;
         if (GetComponentInParent<Character2D>().Disable) return;
