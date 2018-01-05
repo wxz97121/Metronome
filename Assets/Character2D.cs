@@ -34,7 +34,7 @@ public class Character2D : MonoBehaviour
     [SerializeField]
     private LayerMask m_WhatIsGround;                  // A mask determining what is ground to the character
     private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
-    const float k_GroundedRadius = 50f; // Radius of the overlap circle to determine if grounded
+    const float k_GroundedRadius = .05f; // Radius of the overlap circle to determine if grounded
     [HideInInspector]
     public bool m_Grounded;            // Whether or not the player is grounded.
     private Transform m_CeilingCheck;   // A position marking where to check for ceilings
@@ -47,7 +47,7 @@ public class Character2D : MonoBehaviour
 
     private Rigidbody2D m_Rigidbody2D;
 
-    public SpriteRenderer LegRenderer;
+    //public SpriteRenderer LegRenderer;
     public SpriteRenderer CopterRenderer;
     private int nowSprite = 0;
     public int life = 3;
@@ -115,8 +115,8 @@ public class Character2D : MonoBehaviour
         Rushing = false;
         GetComponent<AudioSource>().Play();
         transform.Rotate(0, 0, 90);
-        if (GetComponentInChildren<Wave>().isHammer)
-            GetComponentInChildren<Wave>().ChangeHammer();
+        if (GetComponentInChildren<NewWave>().isHammer)
+            GetComponentInChildren<NewWave>().ChangeHammer();
         yield return new WaitForSeconds(3);
         if (m_Gamemode.pause || life <= 0) yield break;
         //life--;
@@ -137,30 +137,27 @@ public class Character2D : MonoBehaviour
 
     IEnumerator WalkUpdate()//更新Sprite，从而实现动画
     {
+        //GetComponent<Animator>().
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
             if (isWin)
             {
                 nowSprite = (nowSprite + 1) % WinSprite.Length;
-                LegRenderer.sprite = null;
                 GetComponent<SpriteRenderer>().sprite = WinSprite[nowSprite];
             }
             else if (Disable && !isDead)
             {
                 GetComponent<SpriteRenderer>().sprite = getDemage;
-                LegRenderer.sprite = null;
             }
             else if (wined)
             {
                 nowSprite = (nowSprite + 1) % WinedSprite.Length;
-                LegRenderer.sprite = null;
                 GetComponent<SpriteRenderer>().sprite = WinedSprite[nowSprite];
             }
             else
             {
                 nowSprite = (nowSprite + 1) % Walking.Length;
-                LegRenderer.sprite = Walking[nowSprite];
                 GetComponent<SpriteRenderer>().sprite = normalMap[nowSprite];
             }
 
@@ -168,7 +165,7 @@ public class Character2D : MonoBehaviour
     }
     public void Win()//让GameController告诉角色，他赢了，开始跳舞吧～
     {
-        GetComponentInChildren<Wave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        GetComponentInChildren<NewWave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
         isWin = true;
     }
     //已经废弃的重击和停顿。
@@ -265,16 +262,16 @@ public class Character2D : MonoBehaviour
     private void Flip()//根据面向，实现翻转
     {
         m_FacingRight = !m_FacingRight;
-        if (isFlip) LegRenderer.flipX = !LegRenderer.flipX;
+        if (isFlip) GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
     }
 
     public void ChangeRotateSpeed(float Speed)
     {
-        GetComponentInChildren<Wave>().speed = Speed;
+        GetComponentInChildren<NewWave>().speed = Speed;
     }
     public void incRotateSpeed(int deltaSpeed)
     {
-        GetComponentInChildren<Wave>().speed += deltaSpeed;
+        GetComponentInChildren<NewWave>().speed += deltaSpeed;
     }
     public void Damage(int deltaHP, Transform OtherTrans, bool IgnoreDisable = false)//被打了>_<
     {
