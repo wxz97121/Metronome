@@ -81,11 +81,11 @@ public class NewWave : MonoBehaviour
             if (other.GetComponent<NewWave>() != null)
             {
                 //Debug.Break();
-                print(1);
+                //print(1);
                 if (other.GetComponent<NewWave>().RotateTransform.eulerAngles.z < 90 && other.GetComponent<NewWave>().direcion == -1) return;
                 if (other.GetComponent<NewWave>().RotateTransform.eulerAngles.z > 270 && other.GetComponent<NewWave>().direcion == 1) return;
                 if (!other.GetComponent<NewWave>().isHammer) other.GetComponent<NewWave>().direcion *= -1;
-                print(2);
+                //print(2);
             }
             GetComponent<AudioSource>().clip = Coll;
             GetComponent<AudioSource>().volume = 0.45f;
