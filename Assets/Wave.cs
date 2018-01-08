@@ -31,6 +31,7 @@ public class Wave : MonoBehaviour
     public void Init()
     {
         if (isHammer) ChangeHammer();
+        StickTransform.eulerAngles.Set(0, 0, 0);
     }
     public void ChangeHammer()
     {
@@ -53,6 +54,12 @@ public class Wave : MonoBehaviour
         //如果砸到人
         if (other.tag == "Player" && m_Character.Disable == false)
         {
+            var m_Dist = Physics2D.Distance(GetComponent<Collider2D>(), other);
+            //print(m_Dist.pointA);
+            //print(m_Dist.pointB);
+            //print(m_Dist.distance);
+            //print((m_Dist.pointB - m_Dist.pointA) * m_Dist.distance);
+            Debug.Break();
             int FaceDir = m_Character.m_FacingRight ? -1 : 1;
             Character2D otherChar = other.GetComponent<Character2D>();
             //如果是跳劈
@@ -94,23 +101,16 @@ public class Wave : MonoBehaviour
             if (!isHammer) direcion *= -1;
 
         }
-        //如果砸到怪物
-        else if (other.tag == "Enemy")
+        if (other.GetComponent<BeAttack>() != null)
         {
-
-            other.GetComponent<Enemy>().HasBeenAttack();
-            if (!isHammer) direcion *= -1;
-        }
-        else if (other.tag == "Box")
-        {
-            float GoAwayDist = 90000;
-            if (transform.position.x > other.transform.position.x) other.GetComponent<Rigidbody2D>().AddForce(new Vector2(-GoAwayDist, 0));
-            else other.GetComponent<Rigidbody2D>().AddForce(new Vector2(GoAwayDist, 0));
-            GetComponentInParent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            GetComponent<AudioSource>().clip = Hit;
-            GetComponent<AudioSource>().volume = 1;
-            GetComponent<AudioSource>().Play();
-            direcion *= -1;
+            other.GetComponent<BeAttack>().BeAttackEvent.Invoke();
+            if (other.GetComponent<BeAttack>().Rebound)
+            {
+                GetComponent<AudioSource>().clip = Hit;
+                GetComponent<AudioSource>().volume = 1;
+                GetComponent<AudioSource>().Play();
+                direcion *= -1;
+            }
         }
     }
     // direction=1 摆锤向左，Direction=-1 摆锤向右
