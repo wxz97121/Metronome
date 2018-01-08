@@ -124,10 +124,12 @@ public class Character2D : MonoBehaviour
         m_GroundCheck = transform.Find("GroundCheck");
         m_CeilingCheck = transform.Find("CeilingCheck");
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
-        Init();
         StartCoroutine(WalkUpdate());
     }
-
+	void Start()
+	{
+		Init();
+	}
     IEnumerator WalkUpdate()//更新Sprite，从而实现动画
     {
         //GetComponent<Animator>().

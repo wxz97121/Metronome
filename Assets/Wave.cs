@@ -54,12 +54,12 @@ public class Wave : MonoBehaviour
         //如果砸到人
         if (other.tag == "Player" && m_Character.Disable == false)
         {
-            var m_Dist = Physics2D.Distance(GetComponent<Collider2D>(), other);
+            //var m_Dist = Physics2D.Distance(GetComponent<Collider2D>(), other);
             //print(m_Dist.pointA);
             //print(m_Dist.pointB);
             //print(m_Dist.distance);
             //print((m_Dist.pointB - m_Dist.pointA) * m_Dist.distance);
-            Debug.Break();
+            //Debug.Break();
             int FaceDir = m_Character.m_FacingRight ? -1 : 1;
             Character2D otherChar = other.GetComponent<Character2D>();
             //如果是跳劈
