@@ -31,26 +31,19 @@ public class PlatformRefresher : MonoBehaviour
     {
         while (true)
         {
-            //for(int i=0; i < 2; i++)
 
             float Newx = Random.Range(LeftPos.position.x, RightPos.position.x);
             while (Mathf.Abs(Newx - Lastx) < DistLimit)
             {
                 Newx = Random.Range(LeftPos.position.x, RightPos.position.x);
             }
-            //if (i == 1)
-            //{
-            //    while (Mathf.Abs(Newx-positionX1) < (378*2))
-            //    {
-            //        Newx = Random.Range(LeftPos.position.x, RightPos.position.x);
-            //    }
-            //}
+
 
             Lastx = Newx;
-            GameObject newPlat = Instantiate(PlatformPrefab, new Vector3(Lastx, LeftPos.position.y, 100), Quaternion.identity);
+            GameObject newPlat = Instantiate(PlatformPrefab, new Vector3(Lastx, LeftPos.position.y, 0), Quaternion.identity);
             var m_Comp = newPlat.AddComponent<RisingPlatform>();
             m_Comp.BeginPos = newPlat.transform.position;
-            m_Comp.TargetPos = newPlat.transform.position + new Vector3(0, 2700, 0);
+            m_Comp.TargetPos = newPlat.transform.position + new Vector3(0, 5, 0);
             //if (Random.value < POfShake) m_Comp.TargetPos += new Vector3((Random.value > 0.5 ? 1 : -1) * Random.Range(minXSpeed, maxXSpeed), 0, 0);
             m_Comp.MoveTime = Random.Range(minUptime, maxUptime);
             LastPlat = newPlat;
