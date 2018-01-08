@@ -31,6 +31,7 @@ public class Tuningfork : MonoBehaviour
         {
             used = true;
             other.GetComponent<Character2D>().ChangeRotateSpeed(0.9f / Rate);
+            GetComponent<CircleCollider2D>().enabled = false;
             other.GetComponent<Character2D>().wined = false;
             Destroy(WaveRenderer);
             Destroy(GetComponent<SpriteRenderer>());

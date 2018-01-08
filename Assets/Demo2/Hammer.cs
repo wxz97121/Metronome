@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Hammer : MonoBehaviour {
+public class Hammer : MonoBehaviour
+{
 
     public Sprite[] HammerSprite;
     private int nowSprite = 0;
     public float Duration = 10;
     private bool used = false;
+    public int HammerDamage = 10;
     // Use this for initialization
+    private GameMode_base m_Gamemode;
     void Start()
     {
         StartCoroutine(HammerUpdate());
+        m_Gamemode = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameMode_base>();
     }
     IEnumerator HammerUpdate()
     {
@@ -29,7 +33,7 @@ public class Hammer : MonoBehaviour {
         {
             used = true;
             other.GetComponentInChildren<Wave>().ChangeHammer();
-            other.GetComponent<Character2D>().AttackDamage = 20;
+            other.GetComponent<Character2D>().AttackDamage = HammerDamage;
             //other.GetComponent<Character2D>().DamageTime = 1.2f;
             //other.GetComponent<Character2D>().GoAwayDist = 90000;
             Destroy(GetComponent<SpriteRenderer>());
@@ -42,9 +46,9 @@ public class Hammer : MonoBehaviour {
         yield return new WaitForSeconds(Duration);
         if (m_Player.GetComponentInChildren<Wave>().isHammer)
             m_Player.GetComponentInChildren<Wave>().ChangeHammer();
-        if (m_Player.GetComponent<Character2D>().AttackDamage == 15)
-            m_Player.GetComponent<Character2D>().AttackDamage = 5;
-        m_Player.GetComponent<Character2D>().DamageTime = 0.9f;
+        if (m_Player.GetComponent<Character2D>().AttackDamage == HammerDamage)
+            m_Player.GetComponent<Character2D>().AttackDamage = m_Gamemode.AttackDamage;
+        //m_Player.GetComponent<Character2D>().DamageTime = GetComponent<GameMode_base>().DamageTime;
         //m_Player.GetComponent<Character2D>().GoAwayDist = 65000;
         Destroy(gameObject);
     }

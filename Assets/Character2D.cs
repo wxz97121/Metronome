@@ -23,7 +23,7 @@ public class Character2D : MonoBehaviour
     private int nowJumpTimes = 0;
     private int maxJumpTimes;
     private AnimationCurve RushCurve;
-    public bool newWave = false;
+    //public bool newWave = false;
     public bool newMove;
     public float flyForce;
     private bool isJumping = false;
@@ -84,11 +84,9 @@ public class Character2D : MonoBehaviour
         AttackDamage = m_Gamemode.AttackDamage;
         UpAttackDamage = m_Gamemode.UpAttackDamage;
         meltSpeed = m_Gamemode.meltSpeed;
-        //transform.localScale = Vector3.one;
         isJumping = false;
         GetComponent<Rigidbody2D>().gravityScale = m_Gamemode.gscale;
         GetComponent<Rigidbody2D>().drag = m_Gamemode.lineardrag;
-        ChangeRotateSpeed(m_Gamemode.wavespeed);
         flyForce = m_Gamemode.flyForce;
         m_MaxSpeed = m_Gamemode.maxspeed;
         MoveForce = m_Gamemode.moveforce;
@@ -101,25 +99,20 @@ public class Character2D : MonoBehaviour
         wined = false;
         Disable = false;
         DamageTime = m_Gamemode.DamageTime;
-        //isFly = false;
         isStop = false;
         ChangeRotateSpeed(m_Gamemode.wavespeed);
+        GetComponentInChildren<Wave>().Init();
         if (CopterRenderer != null) CopterRenderer.gameObject.SetActive(false);
         m_Rigidbody2D.velocity = new Vector3(0, 0, 0);
     }
     public IEnumerator Respawn()
     {
-        //print("???");
-        //if (Disable) yield break;
         isDead = true;
         Rushing = false;
         GetComponent<AudioSource>().Play();
         transform.Rotate(0, 0, 90);
-        if (GetComponentInChildren<NewWave>().isHammer)
-            GetComponentInChildren<NewWave>().ChangeHammer();
         yield return new WaitForSeconds(3);
         if (m_Gamemode.pause || life <= 0) yield break;
-        //life--;
         Init();
         transform.position = m_Gamemode.GetRespawnLocation();
         transform.Rotate(0, 0, -90);
@@ -165,7 +158,7 @@ public class Character2D : MonoBehaviour
     }
     public void Win()//让GameController告诉角色，他赢了，开始跳舞吧～
     {
-        GetComponentInChildren<NewWave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        GetComponentInChildren<Wave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
         isWin = true;
     }
     //已经废弃的重击和停顿。
@@ -267,11 +260,11 @@ public class Character2D : MonoBehaviour
 
     public void ChangeRotateSpeed(float Speed)
     {
-        GetComponentInChildren<NewWave>().speed = Speed;
+        GetComponentInChildren<Wave>().speed = Speed;
     }
     public void incRotateSpeed(int deltaSpeed)
     {
-        GetComponentInChildren<NewWave>().speed += deltaSpeed;
+        GetComponentInChildren<Wave>().speed += deltaSpeed;
     }
     public void Damage(int deltaHP, Transform OtherTrans, bool IgnoreDisable = false)//被打了>_<
     {
