@@ -37,6 +37,7 @@ public class Hammer : MonoBehaviour
             //other.GetComponent<Character2D>().DamageTime = 1.2f;
             //other.GetComponent<Character2D>().GoAwayDist = 90000;
             Destroy(GetComponent<SpriteRenderer>());
+			Destroy (GetComponent<CircleCollider2D> ());
             StartCoroutine(reset(other.GetComponent<Character2D>()));
         }
     }

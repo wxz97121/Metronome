@@ -4,7 +4,7 @@ using DG.Tweening;
 
 public class Ice : MonoBehaviour
 {
-    private GameObject Player1, Player2;
+	private GameObject[] AllPlayer;
     private float nowTime = 0;
     private bool isDisappearing;
     public float minExistTime, maxExistTime, minDisappearTime, maxDisappearTime;
@@ -47,10 +47,13 @@ public class Ice : MonoBehaviour
         if (isDisappearing) return;
         //print(LayerMask.NameToLayer("Player"));
         float MeltingSpeed = 0;
-        if (GetComponent<BoxCollider2D>().IsTouching(Player1.GetComponent<Collider2D>()))
-            MeltingSpeed += Player1.GetComponent<Character2D>().meltSpeed;
-        if (GetComponent<BoxCollider2D>().IsTouching(Player2.GetComponent<Collider2D>()))
-            MeltingSpeed += Player1.GetComponent<Character2D>().meltSpeed; 
+		foreach (var m_Player in AllPlayer)
+			if (GetComponent<BoxCollider2D> ().IsTouching (m_Player.GetComponent<Collider2D> ())) 
+			{
+				MeltingSpeed += m_Player.GetComponent<Character2D> ().meltSpeed;
+				//print (m_Player.name);
+				//print (m_Player.GetComponent<Character2D> ().meltSpeed);
+			}
         nowTime += Time.fixedDeltaTime*MeltingSpeed;
         var tmpColor = GetComponent<SpriteRenderer>().color;
         tmpColor.a = (Mathf.Lerp(1, 0.1f, nowTime / minExistTime));
@@ -76,7 +79,6 @@ public class Ice : MonoBehaviour
     }
     private void Awake()
     {
-        Player1 = GameObject.Find("Player1");
-        Player2 = GameObject.Find("Player2");
+		AllPlayer = GameObject.FindGameObjectsWithTag("Player");
     }
 }
