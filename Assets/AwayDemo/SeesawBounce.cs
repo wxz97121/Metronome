@@ -8,7 +8,7 @@ public class SeesawBounce : MonoBehaviour
     public float multipleBounce;
     private float angularStart;
     private Rigidbody2D rigidbodyBounce;
-    public float LowerAngle = -25, UpperAngle = 25;
+    //public float LowerAngle = -25, UpperAngle = 25;
     private Vector3 InitPos;
     private void Awake()
     {
@@ -31,6 +31,7 @@ public class SeesawBounce : MonoBehaviour
         while (nowz > 180) nowz -= 360;
         rigidbodyBounce.AddTorque((angularStart - nowz) * multipleBounce);
     }
+	/*
     private void LateUpdate()
     {
         float nowz = transform.localEulerAngles.z;
@@ -40,5 +41,5 @@ public class SeesawBounce : MonoBehaviour
         if (nowz < 180 && nowz > UpperAngle) rigidbodyBounce.rotation = UpperAngle;
         rigidbodyBounce.position=InitPos;
         //print(transform.localEulerAngles.z);
-    }
+    }*/
 }

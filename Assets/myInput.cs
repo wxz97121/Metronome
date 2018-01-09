@@ -45,7 +45,7 @@ public class myInput : MonoBehaviour
             JoyStickMove = "Joy1Horizon";
             JoyStickJump = KeyCode.Joystick1Button0;
         }
-        if (m_Input == InputType.Joystick1 || m_Input == InputType.Debug_2)
+        if (m_Input == InputType.Joystick2 || m_Input == InputType.Debug_2)
         {
             JoyStickMove = "Joy2Horizon";
             JoyStickJump = KeyCode.Joystick2Button0;
