@@ -36,6 +36,7 @@ public class GameMode_base : MonoBehaviour
     }
     private void Awake()
     {
+        Random.InitState(19961018);
         AllPlayer = GameObject.FindGameObjectsWithTag("Player");
     }
     protected void Update()
