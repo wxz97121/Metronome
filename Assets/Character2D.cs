@@ -113,9 +113,9 @@ public class Character2D : MonoBehaviour
         transform.Rotate(0, 0, 90);
         yield return new WaitForSeconds(3);
         if (m_Gamemode.pause || life <= 0) yield break;
-        Init();
         transform.position = m_Gamemode.GetRespawnLocation();
         transform.Rotate(0, 0, -90);
+        Init();
     }
     private void Awake()
     {
