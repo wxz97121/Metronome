@@ -21,7 +21,7 @@ public class RestLife : MonoBehaviour
     {
         if (m_Character.life<LifeSprite.Length && m_Character.life>=0)
             ImageUI.sprite = LifeSprite[m_Character.life];
-        ScrollbarUI.size = (float)m_Character.HP / m_Gamemode.HPofLife;
+        ScrollbarUI.size = (float)m_Character.HP / m_Gamemode.HP_of_Life;
         if (m_Character.isDead) ScrollbarUI.size = 1;
 
     }

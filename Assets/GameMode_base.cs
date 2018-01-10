@@ -8,7 +8,7 @@ public class GameMode_base : MonoBehaviour
     public bool pause = false;
     public int maxJumpTimes = 2;
     public float DamageTime = 0.75f;
-    public float gscale = 590;
+    public float gscale = 1.425f;
     public bool airControl = true;
     public float maxspeed = 550;
     public float moveforce = 15000;
@@ -23,7 +23,8 @@ public class GameMode_base : MonoBehaviour
     public float meltSpeed = 1;
     public int AttackDamage = 5;
     public int UpAttackDamage = 10;
-    public int HPofLife = 20;
+    public int HP_of_Life = 15;
+    public int InitLife = 3;
     [HideInInspector]
     public Vector3 RespawnLocation;
     //public abstract IEnumerator EndGame(string Winner);
@@ -51,6 +52,7 @@ public class GameMode_base : MonoBehaviour
             { nowAlivePlayer++; Winner = g; }
         }
         if (nowAlivePlayer == 1) StartCoroutine(EndGame(Winner));
+        if (nowAlivePlayer == 0) SceneManager.LoadScene("MainMenu");
     }
     public IEnumerator EndGame(GameObject WinnerObject)
     {

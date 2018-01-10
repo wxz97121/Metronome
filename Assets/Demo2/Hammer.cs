@@ -24,6 +24,7 @@ public class Hammer : MonoBehaviour
             if (used) yield break;
             nowSprite = (nowSprite + 1) % HammerSprite.Length;
             GetComponent<SpriteRenderer>().sprite = HammerSprite[nowSprite];
+            if (transform.position.y < -2) Destroy(gameObject);
         }
     }
     public void OnTriggerEnter2D(Collider2D other)

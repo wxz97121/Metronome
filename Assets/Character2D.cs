@@ -50,6 +50,7 @@ public class Character2D : MonoBehaviour
     //public SpriteRenderer LegRenderer;
     public SpriteRenderer CopterRenderer;
     private int nowSprite = 0;
+    [HideInInspector]
     public int life = 3;
     [HideInInspector]
     public int AttackDamage = 5;
@@ -63,8 +64,9 @@ public class Character2D : MonoBehaviour
     public Sprite getDemage;
     private GameMode_base m_Gamemode;
     public Sprite[] WinedSprite;
-    public Sprite[] normalMap;
+    public Sprite[] normalSprite;
     public Sprite[] WinSprite;
+    public Sprite[] DeadSprite;
     public bool isFly;
     private float LastRushTime = -100;
     private bool Rushing = false;
@@ -79,8 +81,9 @@ public class Character2D : MonoBehaviour
     //public float HardAttackMultiple = 3;
     void Init()//复活和初次出现时更新各种值
     {
-        HP = m_Gamemode.HPofLife;
         isDead = false;
+        GetComponent<SpriteRenderer>().sprite = normalSprite[nowSprite];
+        HP = m_Gamemode.HP_of_Life;
         AttackDamage = m_Gamemode.AttackDamage;
         UpAttackDamage = m_Gamemode.UpAttackDamage;
         meltSpeed = m_Gamemode.meltSpeed;
@@ -107,14 +110,15 @@ public class Character2D : MonoBehaviour
     }
     public IEnumerator Respawn()
     {
+
         isDead = true;
         Rushing = false;
         GetComponent<AudioSource>().Play();
-        transform.Rotate(0, 0, 90);
+        if (DeadSprite.Length == 0) transform.Rotate(0, 0, 90);
         yield return new WaitForSeconds(3);
         if (m_Gamemode.pause || life <= 0) yield break;
         transform.position = m_Gamemode.GetRespawnLocation();
-        transform.Rotate(0, 0, -90);
+        if (DeadSprite.Length == 0) transform.Rotate(0, 0, -90);
         Init();
     }
     private void Awake()
@@ -126,10 +130,11 @@ public class Character2D : MonoBehaviour
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         StartCoroutine(WalkUpdate());
     }
-	void Start()
-	{
-		Init();
-	}
+    void Start()
+    {
+        life = m_Gamemode.InitLife;
+        Init();
+    }
     IEnumerator WalkUpdate()//更新Sprite，从而实现动画
     {
         //GetComponent<Animator>().
@@ -141,7 +146,22 @@ public class Character2D : MonoBehaviour
                 nowSprite = (nowSprite + 1) % WinSprite.Length;
                 GetComponent<SpriteRenderer>().sprite = WinSprite[nowSprite];
             }
-            else if (Disable && !isDead)
+            else if (isDead && DeadSprite.Length != 0)
+            {
+                GetComponent<SpriteRenderer>().sprite = DeadSprite[0];
+                yield return new WaitForSeconds(0.1f);
+                GetComponent<SpriteRenderer>().sprite = DeadSprite[1];
+                yield return new WaitForSeconds(0.1f);
+                while (isDead)
+                {
+                    GetComponent<SpriteRenderer>().sprite = DeadSprite[2];
+                    yield return new WaitForSeconds(0.1f);
+                    if (!isDead) break;
+                    GetComponent<SpriteRenderer>().sprite = DeadSprite[3];
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+            else if (Disable)
             {
                 GetComponent<SpriteRenderer>().sprite = getDemage;
             }
@@ -153,14 +173,17 @@ public class Character2D : MonoBehaviour
             else
             {
                 nowSprite = (nowSprite + 1) % Walking.Length;
-                GetComponent<SpriteRenderer>().sprite = normalMap[nowSprite];
+                GetComponent<SpriteRenderer>().sprite = normalSprite[nowSprite];
             }
 
         }
     }
     public void Win()//让GameController告诉角色，他赢了，开始跳舞吧～
     {
-        GetComponentInChildren<Wave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        //GetComponentInChildren<Wave>().gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        m_Rigidbody2D.bodyType = RigidbodyType2D.Static;
+        //Destroy(GetComponent<Rigidbody2D>());
+        //Destroy(GetComponent<Collider2D>());
         isWin = true;
     }
     //已经废弃的重击和停顿。

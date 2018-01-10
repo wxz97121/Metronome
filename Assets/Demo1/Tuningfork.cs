@@ -22,6 +22,7 @@ public class Tuningfork : MonoBehaviour
             if (used) yield break;
             nowWaveSprite = (nowWaveSprite + 1) % WaveSprite.Length;
             WaveRenderer.sprite = WaveSprite[nowWaveSprite];
+            if (transform.position.y < -2) Destroy(gameObject);
         }
     }
     void OnTriggerEnter2D(Collider2D other)

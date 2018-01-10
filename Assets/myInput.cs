@@ -58,10 +58,10 @@ public class myInput : MonoBehaviour
         if (PlayerPrefs.HasKey(gameObject.name + "_Input"))
         {
             int v = PlayerPrefs.GetInt(gameObject.name + "_Input");
-            if (v == 1) m_Input = InputType.Keyboard_WAD;
-            if (v == 2) m_Input = InputType.Keyboard_Arrow;
-            if (v == 3) m_Input = InputType.Joystick1;
-            if (v == 4) m_Input = InputType.Joystick2;
+            if (v == 0) m_Input = InputType.Keyboard_WAD;
+            if (v == 1) m_Input = InputType.Keyboard_Arrow;
+            if (v == 2) m_Input = InputType.Joystick1;
+            if (v == 3) m_Input = InputType.Joystick2;
         }
         ProcessKey();
         m_Character = GetComponent<Character2D>();

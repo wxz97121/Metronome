@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayButton : MonoBehaviour {
 
+public class PlayButton : MonoBehaviour {
+    public string ToScene;
     void OnMouseEnter()
     {
         GetComponent<SpriteRenderer>().color = Color.black;
-
     }
     void OnMouseExit()
     {
@@ -17,6 +17,6 @@ public class PlayButton : MonoBehaviour {
     void OnMouseDown()
     {
         GetComponent<SpriteRenderer>().color = Color.white;
-        SceneManager.LoadScene(gameObject.name[0] - '0');
+        SceneManager.LoadScene(ToScene);
     }
 }
